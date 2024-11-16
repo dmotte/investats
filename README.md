@@ -1,0 +1,2 @@
+# investats
+Investment statistics calculator
