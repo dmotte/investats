@@ -18,7 +18,7 @@ def is_aware(d: dt):
     return d.tzinfo is not None and d.tzinfo.utcoffset(d) is not None
 
 
-def load_data(file: TextIO, skip_check: bool = False) -> list[dict]:
+def load_data(file: TextIO, check_sorted: bool = True) -> list[dict]:
     '''
     Loads data from a YAML file
     '''
@@ -38,8 +38,12 @@ def load_data(file: TextIO, skip_check: bool = False) -> list[dict]:
         if not is_aware(entry['datetime']):
             entry['datetime'] = entry['datetime'].astimezone()
 
-        # TODO check that are sorted, if the bool param allows to do that
-        # TODO make a flag out of the bool param
+    if check_sorted:
+        for i in range(1, len(data)):
+            dt_curr, dt_prev = data[i]['datetime'], data[i - 1]['datetime']
+            if dt_curr <= dt_prev:
+                raise ValueError('Datetime ' + str(dt_curr) +
+                                 ' is <= than the previous one ' + str(dt_prev))
 
     return data
 
@@ -60,6 +64,10 @@ def main(argv=None):
                         nargs='?', default='-',
                         help='Output file. If set to "-" then stdout is used '
                         '(default: -)')
+
+    parser.add_argument('-s', '--skip-check-sorted', action='store_true',
+                        help='If set, the input entries will not be checked '
+                        'to be in ascending order')
 
     # TODO flags to format the values with format strings (see apycalc)
 
