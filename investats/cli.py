@@ -48,6 +48,27 @@ def load_data(file: TextIO, check_sorted: bool = True) -> list[dict]:
     return data
 
 
+def save_data(data: list[dict], file: TextIO):
+    '''
+    Saves data into a CSV file
+    '''
+    data = [x.copy() for x in data]
+
+    # TODO formats for the following categories (with sensible value in
+    # parentheses, for the example):
+    #   - fmt_days (2)
+    #   - fmt_src (2)
+    #   - fmt_dst (4) (common one, in case of multiple assets, in future version)
+    #   - fmt_rate (6)
+    #   - fmt_yield (4)
+
+    # TODO better print (see apycalc)
+    keys = list(data[0].keys())
+    print(','.join(keys), file=file)
+    for x in data:
+        print(','.join(x[k] for k in keys), file=file)
+
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -65,9 +86,16 @@ def main(argv=None):
                         help='Output file. If set to "-" then stdout is used '
                         '(default: -)')
 
+    # TODO make sure that you use all the defined args
+
     parser.add_argument('-s', '--skip-check-sorted', action='store_true',
                         help='If set, the input entries will not be checked '
                         'to be in ascending order')
+
+    # TODO for the save_data function
+    parser.add_argument('-n', '--notes', action='store_true',
+                        help='If set, the note column will be included in '
+                        'the output')
 
     # TODO flags to format the values with format strings (see apycalc)
 
