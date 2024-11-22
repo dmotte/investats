@@ -107,7 +107,7 @@ def main(argv=None):
 
     # TODO for the save_data function
     parser.add_argument('-n', '--notes', action='store_true',
-                        help='If set, the note column will be included in '
+                        help='If set, the notes column will be included in '
                         'the output')
 
     # TODO flags to format the values with format strings (see apycalc)
