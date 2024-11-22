@@ -66,7 +66,7 @@ def save_data(data: list[dict], file: TextIO):
     keys = list(data[0].keys())
     print(','.join(keys), file=file)
     for x in data:
-        print(','.join(x[k] for k in keys), file=file)
+        print(','.join(str(x[k]) if k in x else '-' for k in keys), file=file)
 
 
 def compute_stats(data: list[dict]):
