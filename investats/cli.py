@@ -116,6 +116,18 @@ def main(argv=None):
 
     ############################################################################
 
-    # TODO
+    if args.file_in == '-':
+        data_in = load_data(sys.stdin, not args.skip_check_sorted)
+    else:
+        with open(args.file_in, 'r') as f:
+            data_in = load_data(f, not args.skip_check_sorted)
+
+    data_out = compute_stats(data_in)
+
+    if args.file_out == '-':
+        save_data(data_out, sys.stdout)
+    else:
+        with open(args.file_out, 'w') as f:
+            save_data(data_out, f)
 
     return 0
