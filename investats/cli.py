@@ -69,6 +69,19 @@ def save_data(data: list[dict], file: TextIO):
         print(','.join(x[k] for k in keys), file=file)
 
 
+def compute_stats(data: list[dict]):
+    '''
+    Computes the statistics
+    '''
+    data = [x.copy() for x in data]
+
+    for index, entry in enumerate(data):
+        # TODO logic!
+        entry['test'] = 100 + index
+
+        yield entry
+
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
