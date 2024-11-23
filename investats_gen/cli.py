@@ -17,6 +17,21 @@ class Freq(StrEnum):
     MONTHLY = 'monthly'
     YEARLY = 'yearly'
 
+    def prev(self, d: date) -> date:
+        '''
+        Calculates the date of the previous investment
+        '''
+        match self:
+            case Freq.DAILY:
+                return d - timedelta(days=1)
+            case Freq.WEEKLY:
+                return d - timedelta(weeks=1)
+            case Freq.MONTHLY:
+                return d.replace(year=d.year - 1, month=12) if d.month == 1 \
+                    else d.replace(month=d.month - 1)
+            case Freq.YEARLY:
+                return d.replace(year=d.year - 1)
+
     def next(self, d: date) -> date:
         '''
         Calculates the date of the next investment
@@ -27,7 +42,8 @@ class Freq(StrEnum):
             case Freq.WEEKLY:
                 return d + timedelta(weeks=1)
             case Freq.MONTHLY:
-                return d.replace(month=d.month + 1)
+                return d.replace(year=d.year + 1, month=1) if d.month == 12 \
+                    else d.replace(month=d.month + 1)
             case Freq.YEARLY:
                 return d.replace(year=d.year + 1)
 
