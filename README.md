@@ -41,3 +41,9 @@ pip3 install -e . --user
 ```
 
 This will just link the package to the original location, basically meaning any changes to the original package would reflect directly in your environment ([source](https://stackoverflow.com/a/35064498)).
+
+If you want to run the tests, you'll have to install the `pytest` package and then run:
+
+```bash
+pytest test
+```
