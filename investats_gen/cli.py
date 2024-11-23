@@ -66,7 +66,3 @@ def main(argv=None):
     # TODO write entries to args.file_out
 
     return 0
-
-
-if __name__ == '__main__':
-    sys.exit(main())
