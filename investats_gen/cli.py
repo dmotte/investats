@@ -17,8 +17,6 @@ class Freq(StrEnum):
     MONTHLY = 'monthly'
     YEARLY = 'yearly'
 
-    # TODO unit tests
-    # TODO consider to have this script as a subcommand
     def next(self, d: date) -> date:
         '''
         Calculates the date of the next investment
