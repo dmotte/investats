@@ -42,6 +42,7 @@ def load_data(file: TextIO, check_sorted: bool = True) -> list[dict]:
         for i in range(1, len(data)):
             dt_curr, dt_prev = data[i]['datetime'], data[i - 1]['datetime']
             if dt_curr <= dt_prev:
+                # TODO allow dt_curr==dt_prev only if curr chkpt and prev invest
                 raise ValueError('Datetime ' + str(dt_curr) +
                                  ' is <= than the previous one ' + str(dt_prev))
 
