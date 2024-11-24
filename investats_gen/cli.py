@@ -129,8 +129,15 @@ def main(argv=None):
 
     ############################################################################
 
-    # TODO entries=...
+    def lambda_write(file: TextIO):
+        return generate_entries(file, args.date_start, args.inv_src,
+                                args.init_rate, args.apy, args.freq,
+                                args.count, args.cgt, args.fmt_rate)
 
-    # TODO write entries to args.file_out
+    if args.file_out == '-':
+        lambda_write(sys.stdout)
+    else:
+        with open(args.file_out, 'w') as f:
+            lambda_write(f)
 
     return 0
