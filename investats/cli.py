@@ -106,11 +106,6 @@ def main(argv=None):
                         help='If set, the input entries will not be checked '
                         'to be in ascending order')
 
-    # TODO for the save_data function
-    parser.add_argument('-n', '--notes', action='store_true',
-                        help='If set, the notes column will be included in '
-                        'the output')
-
     # TODO flags to format the values with format strings (see apycalc)
 
     args = parser.parse_args(argv[1:])
