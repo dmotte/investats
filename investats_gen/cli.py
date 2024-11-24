@@ -6,6 +6,7 @@ import sys
 from datetime import date
 from datetime import timedelta
 from enum import Enum
+from typing import TextIO
 
 
 class Freq(str, Enum):
@@ -48,17 +49,36 @@ class Freq(str, Enum):
                 return d.replace(year=d.year + 1)
 
 
-def generate_entries(date_start: date, init_src: float, rate: float,
-                     apy: float, freq: Freq, count: int, cgt: float):
+def generate_entries(file: TextIO, date_start: date, init_src: str,
+                     init_rate: float, apy: float, freq: Freq, count: int,
+                     cgt: str = '0', fmt_rate: str = ''):
     '''
     Generates entries based on some parameters
     '''
-    # TODO d = Freq.prev(date_start) ???
+    if count < 2:
+        raise ValueError('Count should be >= 2')
 
-    for i in range(count):
-        entry = {}
+    d = date_start
+    rate = init_rate
+    str_rate = str(rate) if fmt_rate == '' else fmt_rate.format(rate)
 
-        yield entry
+    print('---', file=file)
+    print('- { datetime: %s, type: invest, inv_src: &inv %s, rate: %s }' %
+          (d.strftime('%Y-%m-%d'), init_src, str_rate), file=file)
+    print('- { datetime: %s, type: chkpt%s }' %
+          (d.strftime('%Y-%m-%d'), '' if cgt == '' else f', cgt: {cgt}'),
+          file=file)
+
+    for _ in range(count):
+        d = freq.next(d)
+        days = (d - date_start).total_seconds() / 60 / 60 / 24
+        rate *= (1 + apy) ** (days / 365) - 1
+        str_rate = str(rate) if fmt_rate == '' else fmt_rate.format(rate)
+
+        print('- { datetime: %s, type: invest, inv_src: *inv, rate: %s }' %
+              (d.strftime('%Y-%m-%d'), str_rate), file=file)
+        print('- { datetime: %s, type: chkpt }' % d.strftime('%Y-%m-%d'),
+              file=file)
 
 
 def main(argv=None):

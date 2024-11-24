@@ -1,26 +1,6 @@
 ---
-- { datetime: 2020-01-01, rate: 100.00, inv_src: &inv 500, cgt: 0.15 }
-- { datetime: 2020-02-01, apy: &apy 0.08, inv_src: *inv }
-- { datetime: 2020-03-01, apy: *apy, inv_src: *inv }
-- { datetime: 2020-04-01, apy: *apy, inv_src: *inv }
-- { datetime: 2020-05-01, apy: *apy, inv_src: *inv }
-- { datetime: 2020-06-01, apy: *apy, inv_src: *inv }
-- { datetime: 2020-07-01, apy: *apy, inv_src: *inv }
-- { datetime: 2020-08-01, apy: *apy, inv_src: *inv }
-- { datetime: 2020-09-01, apy: *apy, inv_src: *inv }
-- { datetime: 2020-10-01, apy: *apy, inv_src: *inv }
-- { datetime: 2020-11-01, apy: *apy, inv_src: *inv }
-- { datetime: 2020-12-01, apy: *apy, inv_src: *inv }
-
-- { datetime: 2021-01-01, apy: *apy, inv_src: *inv }
-- { datetime: 2021-02-01, apy: *apy, inv_src: *inv }
-- { datetime: 2021-03-01, apy: *apy, inv_src: *inv }
-- { datetime: 2021-04-01, apy: *apy, inv_src: *inv }
-- { datetime: 2021-05-01, apy: *apy, inv_src: *inv }
-- { datetime: 2021-06-01, apy: *apy, inv_src: *inv }
-- { datetime: 2021-07-01, apy: *apy, inv_src: *inv }
-- { datetime: 2021-08-01, apy: *apy, inv_src: *inv }
-- { datetime: 2021-09-01, apy: *apy, inv_src: *inv }
-- { datetime: 2021-10-01, apy: *apy, inv_src: *inv }
-- { datetime: 2021-11-01, apy: *apy, inv_src: *inv }
-- { datetime: 2021-12-01, apy: *apy, inv_src: *inv }
+# TODO
+- { datetime: 2020-01-01, type: invest, inv_src: &inv 500, rate: 100.00 }
+- { datetime: 2020-01-01, type: chkpt, cgt: 0.15 }
+- { datetime: 2020-02-01, type: invest, inv_src: *inv, rate: 101.00 }
+- { datetime: 2020-02-01, type: chkpt }
