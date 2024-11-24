@@ -62,3 +62,49 @@ def test_load_data():
 
     with pytest.raises(ValueError):  # Invalid datetime type: foo
         load_data(io.StringIO(yml))
+
+    yml = textwrap.dedent('''\
+        ---
+        - { datetime: 2020-01-12, type: invest, inv_src: &inv 500, rate: 100.0000 }
+        - { datetime: 2020-01-12, type: chkpt, cgt: 0.15 }
+        - { datetime: 2020-02-12, type: invest, inv_src: *inv, rate: 100.6558, inv_dst: 1234 }
+        - { datetime: 2020-02-12 01:23:45, type: chkpt }
+    ''')
+
+    with pytest.raises(ValueError):  # Invalid entry (inv_src + rate + inv_dst)
+        load_data(io.StringIO(yml))
+
+    yml = textwrap.dedent('''\
+        ---
+        - { datetime: 2020-01-12, type: invest, inv_src: &inv 500, rate: 100.0000 }
+        - { datetime: 2020-01-12, type: chkpt, cgt: 0.15 }
+        - { datetime: 2020-02-12, type: invest, inv_src: *inv }
+        - { datetime: 2020-02-12 01:23:45, type: chkpt }
+    ''')
+
+    with pytest.raises(ValueError):  # Invalid entry (only inv_src is present)
+        load_data(io.StringIO(yml))
+
+    yml = textwrap.dedent('''\
+        ---
+        - { datetime: 2020-01-12, type: invest, inv_src: &inv 500, rate: 100.0000 }
+        - { datetime: 2020-01-11, type: chkpt, cgt: 0.15 }
+        - { datetime: 2020-02-12, type: invest, inv_src: *inv, rate: 100.6558 }
+        - { datetime: 2020-02-12 01:23:45, type: chkpt }
+    ''')
+
+    # Invalid entry order: 2020-01-12 > 2020-01-11
+    with pytest.raises(ValueError):
+        load_data(io.StringIO(yml))
+
+    yml = textwrap.dedent('''\
+        ---
+        - { datetime: 2020-01-12, type: invest, inv_src: &inv 500, rate: 100.0000 }
+        - { datetime: 2020-01-12, type: chkpt, cgt: 0.15 }
+        - { datetime: 2020-01-12, type: invest, inv_src: *inv, rate: 100.6558 }
+        - { datetime: 2020-02-12 01:23:45, type: chkpt }
+    ''')
+
+    # Invalid entry order: 2020-01-12 >= 2020-01-12
+    with pytest.raises(ValueError):
+        load_data(io.StringIO(yml))
