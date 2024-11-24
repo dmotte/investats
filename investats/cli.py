@@ -18,7 +18,7 @@ def is_aware(d: dt):
     return d.tzinfo is not None and d.tzinfo.utcoffset(d) is not None
 
 
-def load_data(file: TextIO, check_sorted: bool = True) -> list[dict]:
+def load_data(file: TextIO) -> list[dict]:
     '''
     Loads data from a YAML file
     '''
@@ -52,20 +52,19 @@ def load_data(file: TextIO, check_sorted: bool = True) -> list[dict]:
                              'must be provided for each entry of '
                              'type "invest"')
 
-    if check_sorted:
-        for i in range(1, len(data)):
-            prev, curr = data[i - 1], data[i]
+    for i in range(1, len(data)):
+        prev, curr = data[i - 1], data[i]
 
-            if prev['type'] == 'invest' and curr['type'] == 'chkpt':
-                if prev['datetime'] > curr['datetime']:
-                    raise ValueError('Invalid entry order: ' +
-                                     str(prev['datetime']) + ' > ' +
-                                     str(curr['datetime']))
-            else:
-                if prev['datetime'] >= curr['datetime']:
-                    raise ValueError('Invalid entry order: ' +
-                                     str(prev['datetime']) + ' >= ' +
-                                     str(curr['datetime']))
+        if prev['type'] == 'invest' and curr['type'] == 'chkpt':
+            if prev['datetime'] > curr['datetime']:
+                raise ValueError('Invalid entry order: ' +
+                                 str(prev['datetime']) + ' > ' +
+                                 str(curr['datetime']))
+        else:
+            if prev['datetime'] >= curr['datetime']:
+                raise ValueError('Invalid entry order: ' +
+                                 str(prev['datetime']) + ' >= ' +
+                                 str(curr['datetime']))
 
     return data
 
@@ -123,10 +122,6 @@ def main(argv=None):
 
     # TODO make sure that you use all the defined args
 
-    parser.add_argument('-s', '--skip-check-sorted', action='store_true',
-                        help='If set, the input entries will not be checked '
-                        'to be in ascending order')
-
     # TODO flags to format the values with format strings (see apycalc)
 
     args = parser.parse_args(argv[1:])
@@ -134,7 +129,7 @@ def main(argv=None):
     ############################################################################
 
     def lambda_read(file: TextIO):
-        return load_data(file, not args.skip_check_sorted)
+        return load_data(file)
 
     if args.file_in == '-':
         data_in = lambda_read(sys.stdin)
