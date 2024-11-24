@@ -72,7 +72,7 @@ def generate_entries(file: TextIO, date_start: date, init_src: str,
     for _ in range(1, count):
         d = freq.next(d)
         days = (d - date_start).total_seconds() / 60 / 60 / 24
-        rate *= (1 + apy) ** (days / 365)
+        rate = init_rate * (1 + apy) ** (days / 365)
         str_rate = str(rate) if fmt_rate == '' else fmt_rate.format(rate)
 
         print('- { datetime: %s, type: invest, inv_src: *inv, rate: %s }' %

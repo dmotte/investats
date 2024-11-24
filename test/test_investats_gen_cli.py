@@ -43,17 +43,21 @@ def test_freq():
 
 
 def test_generate_entries():
+    with pytest.raises(ValueError):
+        generate_entries(io.StringIO(), date(2020, 1, 1), '500', 100, 0.08,
+                         Freq.MONTHLY, 1, '0.15', '{:.4f}')
+
     yml01 = textwrap.dedent('''\
         ---
         - { datetime: 2020-01-01, type: invest, inv_src: &inv 500, rate: 100.0000 }
         - { datetime: 2020-01-01, type: chkpt, cgt: 0.15 }
         - { datetime: 2020-02-01, type: invest, inv_src: *inv, rate: 100.6558 }
         - { datetime: 2020-02-01, type: chkpt }
-        - { datetime: 2020-03-01, type: invest, inv_src: *inv, rate: 101.9373 }
+        - { datetime: 2020-03-01, type: invest, inv_src: *inv, rate: 101.2731 }
         - { datetime: 2020-03-01, type: chkpt }
-        - { datetime: 2020-04-01, type: invest, inv_src: *inv, rate: 103.9121 }
+        - { datetime: 2020-04-01, type: invest, inv_src: *inv, rate: 101.9373 }
         - { datetime: 2020-04-01, type: chkpt }
-        - { datetime: 2020-05-01, type: invest, inv_src: *inv, rate: 106.5973 }
+        - { datetime: 2020-05-01, type: invest, inv_src: *inv, rate: 102.5841 }
         - { datetime: 2020-05-01, type: chkpt }
     ''')
 
