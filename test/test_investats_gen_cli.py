@@ -67,3 +67,17 @@ def test_generate_entries():
     buf.seek(0)
 
     assert buf.read() == yml01
+
+    yml02 = textwrap.dedent('''\
+        ---
+        - { datetime: 2021-01-01, type: invest, inv_src: &inv 500, rate: 100 }
+        - { datetime: 2021-01-01, type: chkpt }
+        - { datetime: 2022-01-01, type: invest, inv_src: *inv, rate: 108.0 }
+        - { datetime: 2022-01-01, type: chkpt }
+    ''')
+
+    buf = io.StringIO()
+    generate_entries(buf, date(2021, 1, 1), '500', 100, 0.08, Freq.YEARLY, 2)
+    buf.seek(0)
+
+    assert buf.read() == yml02

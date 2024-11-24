@@ -51,7 +51,7 @@ class Freq(str, Enum):
 
 def generate_entries(file: TextIO, date_start: date, init_src: str,
                      init_rate: float, apy: float, freq: Freq, count: int,
-                     cgt: str = '0', fmt_rate: str = ''):
+                     cgt: str = '', fmt_rate: str = ''):
     '''
     Generates entries based on some parameters
     '''
