@@ -47,7 +47,7 @@ def test_generate_entries():
         generate_entries(io.StringIO(), date(2020, 1, 1), '500', 100, 0.08,
                          Freq.MONTHLY, 1, '0.15', '{:.4f}')
 
-    yml01 = textwrap.dedent('''\
+    yml = textwrap.dedent('''\
         ---
         - { datetime: 2020-01-01, type: invest, inv_src: &inv 500, rate: 100.0000 }
         - { datetime: 2020-01-01, type: chkpt, cgt: 0.15 }
@@ -66,9 +66,9 @@ def test_generate_entries():
                      '0.15', '{:.4f}')
     buf.seek(0)
 
-    assert buf.read() == yml01
+    assert buf.read() == yml
 
-    yml02 = textwrap.dedent('''\
+    yml = textwrap.dedent('''\
         ---
         - { datetime: 2021-01-01, type: invest, inv_src: &inv 500, rate: 100 }
         - { datetime: 2021-01-01, type: chkpt }
@@ -80,9 +80,9 @@ def test_generate_entries():
     generate_entries(buf, date(2021, 1, 1), '500', 100, 0.08, Freq.YEARLY, 2)
     buf.seek(0)
 
-    assert buf.read() == yml02
+    assert buf.read() == yml
 
-    yml03 = textwrap.dedent('''\
+    yml = textwrap.dedent('''\
         ---
         - { datetime: 2021-01-01, type: invest, inv_src: &inv 500, rate: 100 }
         - { datetime: 2021-01-01, type: chkpt }
@@ -97,4 +97,4 @@ def test_generate_entries():
                          Freq.YEARLY, 2, cgt)
         buf.seek(0)
 
-        assert buf.read() == yml03
+        assert buf.read() == yml
