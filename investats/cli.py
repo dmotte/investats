@@ -38,6 +38,16 @@ def load_data(file: TextIO, check_sorted: bool = True) -> list[dict]:
         if not is_aware(entry['datetime']):
             entry['datetime'] = entry['datetime'].astimezone()
 
+        if entry['type'] == 'invest' and not any([
+            'inv_src' not in entry and 'inv_dst' in entry and 'rate' in entry,
+            'inv_src' in entry and 'inv_dst' not in entry and 'rate' in entry,
+            'inv_src' in entry and 'inv_dst' in entry and 'rate' not in entry,
+        ]):
+            raise ValueError('Invalid entry ' + str(entry) + ': exactly two '
+                             'values among "inv_src", "inv_dst" and "rate" '
+                             'must be provided for each entry of '
+                             'type "invest"')
+
     if check_sorted:
         for i in range(1, len(data)):
             dt_curr, dt_prev = data[i]['datetime'], data[i - 1]['datetime']
