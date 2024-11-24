@@ -14,7 +14,7 @@ from investats_gen import generate_entries
 def test_freq():
     assert Freq('weekly') == Freq.WEEKLY
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError):  # 'foo' is not a valid Freq
         Freq('foo')
 
     d = date(2020, 1, 1)
@@ -43,7 +43,7 @@ def test_freq():
 
 
 def test_generate_entries():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError):  # Count must be >= 2
         generate_entries(io.StringIO(), date(2020, 1, 1), '500', 100, 0.08,
                          Freq.MONTHLY, 1, '0.15', '{:.4f}')
 
