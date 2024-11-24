@@ -5,10 +5,10 @@ import sys
 
 from datetime import date
 from datetime import timedelta
-from enum import StrEnum
+from enum import Enum
 
 
-class Freq(StrEnum):
+class Freq(str, Enum):
     '''
     Represents how often an investment is made
     '''
