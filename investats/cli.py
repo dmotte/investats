@@ -34,7 +34,8 @@ def load_data(file: TextIO, check_sorted: bool = True) -> list[dict]:
 
         if not isinstance(entry['datetime'], dt):
             if not isinstance(entry['datetime'], date):
-                raise ValueError('Invalid datetime type: ' + entry['datetime'])
+                raise ValueError('Invalid datetime type: ' +
+                                 str(entry['datetime']))
 
             entry['datetime'] = dt.combine(entry['datetime'], dt.min.time())
 

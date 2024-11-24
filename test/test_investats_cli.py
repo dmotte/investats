@@ -51,3 +51,14 @@ def test_load_data():
 
     with pytest.raises(ValueError):  # Invalid entry type: foo
         load_data(io.StringIO(yml))
+
+    yml = textwrap.dedent('''\
+        ---
+        - { datetime: 2020-01-12, type: invest, inv_src: &inv 500, rate: 100.0000 }
+        - { datetime: foo, type: chkpt, cgt: 0.15 }
+        - { datetime: 2020-02-12, type: invest, inv_src: *inv, rate: 100.6558 }
+        - { datetime: 2020-02-12 01:23:45, type: chkpt }
+    ''')
+
+    with pytest.raises(ValueError):  # Invalid datetime type: foo
+        load_data(io.StringIO(yml))
