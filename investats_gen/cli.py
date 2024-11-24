@@ -59,17 +59,17 @@ def generate_entries(file: TextIO, date_start: date, inv_src: str,
     if count < 2:
         raise ValueError('Count must be >= 2')
 
+    zero_cgt = cgt == '' or float(cgt) == 0
+
     d = date_start
     rate = init_rate
     str_rate = str(rate) if fmt_rate == '' else fmt_rate.format(rate)
-
-    # TODO bool var zero_cgt to better check if cgt is zero
 
     print('---', file=file)
     print('- { datetime: %s, type: invest, inv_src: &inv %s, rate: %s }' %
           (d.strftime('%Y-%m-%d'), inv_src, str_rate), file=file)
     print('- { datetime: %s, type: chkpt%s }' %
-          (d.strftime('%Y-%m-%d'), '' if cgt == '' else f', cgt: {cgt}'),
+          (d.strftime('%Y-%m-%d'), '' if zero_cgt else f', cgt: {cgt}'),
           file=file)
 
     for _ in range(1, count):
