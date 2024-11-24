@@ -3,6 +3,7 @@
 import argparse
 import sys
 
+from datetime import datetime as dt
 from datetime import date
 from datetime import timedelta
 from enum import Enum
@@ -49,22 +50,24 @@ class Freq(str, Enum):
                 return d.replace(year=d.year + 1)
 
 
-def generate_entries(file: TextIO, date_start: date, init_src: str,
+def generate_entries(file: TextIO, date_start: date, inv_src: str,
                      init_rate: float, apy: float, freq: Freq, count: int,
                      cgt: str = '', fmt_rate: str = ''):
     '''
     Generates entries based on some parameters
     '''
     if count < 2:
-        raise ValueError('Count should be >= 2')
+        raise ValueError('Count must be >= 2')
 
     d = date_start
     rate = init_rate
     str_rate = str(rate) if fmt_rate == '' else fmt_rate.format(rate)
 
+    # TODO bool var zero_cgt to better check if cgt is zero
+
     print('---', file=file)
     print('- { datetime: %s, type: invest, inv_src: &inv %s, rate: %s }' %
-          (d.strftime('%Y-%m-%d'), init_src, str_rate), file=file)
+          (d.strftime('%Y-%m-%d'), inv_src, str_rate), file=file)
     print('- { datetime: %s, type: chkpt%s }' %
           (d.strftime('%Y-%m-%d'), '' if cgt == '' else f', cgt: {cgt}'),
           file=file)
@@ -89,7 +92,38 @@ def main(argv=None):
         description='Generate sample entries based on some parameters'
     )
 
-    # TODO flags
+    parser.add_argument('file_out', metavar='FILE_OUT', type=str,
+                        nargs='?', default='-',
+                        help='Output file. If set to "-" then stdout is used '
+                        '(default: -)')
+
+    parser.add_argument('-d', '--date-start',
+                        type=lambda x: dt.strptime(x, '%Y-%m-%d').date(),
+                        default=dt.now().date() - timedelta(days=365),
+                        help='Start date, in YYYY-MM-DD format '
+                        '(default: 365 days ago)')
+    parser.add_argument('-s', '--inv-src', type=str, default='1000',
+                        help='How much SRC to invest each time '
+                        '(default: 1000)')
+    parser.add_argument('-r', '--init-rate', type=float, default=100,
+                        help='Initial DST/SRC rate value (default: 100)')
+
+    parser.add_argument('-a', '--apy', type=float, default=0,
+                        help='APY (over 365 days) of the DST/SRC rate '
+                        '(default: 0)')
+    parser.add_argument('-f', '--freq', type=lambda x: Freq(x),
+                        default=Freq.MONTHLY,
+                        help='How often the investment is made '
+                        '(default: monthly)')
+    parser.add_argument('-c', '--count', type=int, default=12,
+                        help='Number of periods (default: 12)')
+
+    parser.add_argument('-t', '--cgt', type=str, default='',
+                        help='Capital Gains Tax (default: empty)')
+
+    parser.add_argument('--fmt-rate', type=str, default='',
+                        help='If specified, formats the rate values with this '
+                        'format string (e.g. "{:.6f}")')
 
     args = parser.parse_args(argv[1:])
 
