@@ -117,18 +117,24 @@ def main(argv=None):
 
     ############################################################################
 
+    def lambda_read(file: TextIO):
+        return load_data(file, not args.skip_check_sorted)
+
     if args.file_in == '-':
-        data_in = load_data(sys.stdin, not args.skip_check_sorted)
+        data_in = lambda_read(sys.stdin)
     else:
         with open(args.file_in, 'r') as f:
-            data_in = load_data(f, not args.skip_check_sorted)
+            data_in = lambda_read(f)
 
     data_out = compute_stats(data_in)
 
+    def lambda_write(data: list[dict], file: TextIO):
+        return save_data(data, file)
+
     if args.file_out == '-':
-        save_data(data_out, sys.stdout)
+        lambda_write(data_out, sys.stdout)
     else:
         with open(args.file_out, 'w') as f:
-            save_data(data_out, f)
+            lambda_write(data_out, f)
 
     return 0
