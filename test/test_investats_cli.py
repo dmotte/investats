@@ -46,7 +46,7 @@ def test_load_data():
         - { datetime: 2020-01-12, type: foo, inv_src: &inv 500, rate: 100.0000 }
         - { datetime: 2020-01-12, type: chkpt, cgt: 0.15 }
         - { datetime: 2020-02-12, type: invest, inv_src: *inv, rate: 100.6558 }
-        - { datetime: 2020-02-12, type: chkpt }
+        - { datetime: 2020-02-12 01:23:45, type: chkpt }
     ''')
 
     with pytest.raises(ValueError):  # Invalid entry type: foo
