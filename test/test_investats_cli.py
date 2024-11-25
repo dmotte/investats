@@ -21,25 +21,14 @@ def test_load_data():
 
     data = load_data(io.StringIO(yml))
 
-    assert data[0]['datetime'] == dt(2020, 1, 12).astimezone()
-    assert data[0]['type'] == 'invest'
-    assert data[0]['inv_src'] == 500
-    assert data[0]['rate'] == 100
-    assert 'inv_dst' not in data[0]
-
-    assert data[1]['datetime'] == dt(2020, 1, 12).astimezone()
-    assert data[1]['type'] == 'chkpt'
-    assert data[1]['cgt'] == 0.15
-
-    assert data[2]['datetime'] == dt(2020, 2, 12).astimezone()
-    assert data[2]['type'] == 'invest'
-    assert data[2]['inv_src'] == 500
-    assert data[2]['rate'] == 100.6558
-    assert 'inv_dst' not in data[2]
-
-    assert data[3]['datetime'] == dt(2020, 2, 12, 1, 23, 45).astimezone()
-    assert data[3]['type'] == 'chkpt'
-    assert 'cgt' not in data[3]
+    assert data[0] == {'datetime': dt(2020, 1, 12).astimezone(),
+                       'type': 'invest', 'inv_src': 500, 'rate': 100}
+    assert data[1] == {'datetime': dt(2020, 1, 12).astimezone(),
+                       'type': 'chkpt', 'cgt': 0.15}
+    assert data[2] == {'datetime': dt(2020, 2, 12).astimezone(),
+                       'type': 'invest', 'inv_src': 500, 'rate': 100.6558}
+    assert data[3] == {'datetime': dt(2020, 2, 12, 1, 23, 45).astimezone(),
+                       'type': 'chkpt'}
 
     yml = textwrap.dedent('''\
         ---
