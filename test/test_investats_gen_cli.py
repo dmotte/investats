@@ -7,8 +7,7 @@ import pytest
 
 from datetime import date
 
-from investats_gen import Freq
-from investats_gen import generate_entries
+from investats_gen import Freq, generate_entries
 
 
 def test_freq():
