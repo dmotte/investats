@@ -115,11 +115,15 @@ def compute_stats(data: list[dict]):
 
     prev_out = None
 
-    diff_src, diff_dst, latest_rate = 0, 0, 0  # TODO
+    diff_src, diff_dst, latest_rate = 0, 0, 0
 
     for entry_in in data:
         if entry_in['type'] == 'invest':
-            pass  # TODO
+            entry_in = complete_invest_entry(entry_in)
+
+            diff_src += entry_in['inv_src']
+            diff_dst += entry_in['inv_dst']
+            latest_rate = entry_in['rate']
         elif entry_in['type'] == 'chkpt':
             entry_out = {'datetime': entry_in['datetime']}
 
@@ -134,6 +138,8 @@ def compute_stats(data: list[dict]):
                     entry_out['diff_days']
 
             # TODO
+
+            diff_src, diff_dst = 0, 0
 
             prev_out = entry_out
 
