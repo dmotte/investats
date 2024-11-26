@@ -96,7 +96,9 @@ def compute_stats(data: list[dict]):
     '''
     data = [x.copy() for x in data]
 
-    prev = None
+    prev_out = None
+
+    diff_src, diff_dst, latest_rate = 0, 0, 0  # TODO
 
     for entry_in in data:
         if entry_in['type'] == 'invest':
@@ -104,19 +106,19 @@ def compute_stats(data: list[dict]):
         elif entry_in['type'] == 'chkpt':
             entry_out = {'datetime': entry_in['datetime']}
 
-            if prev is None:
+            if prev_out is None:
                 entry_out['diff_days'] = 0
                 entry_out['tot_days'] = 0
             else:
                 entry_out['diff_days'] = (
-                    entry_out['datetime'] - prev['datetime']
+                    entry_out['datetime'] - prev_out['datetime']
                 ).total_seconds() / 60 / 60 / 24
-                entry_out['tot_days'] = prev['tot_days'] + \
+                entry_out['tot_days'] = prev_out['tot_days'] + \
                     entry_out['diff_days']
 
             # TODO
 
-            prev = entry_out
+            prev_out = entry_out
 
             yield entry_out
         else:
