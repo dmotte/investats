@@ -97,3 +97,32 @@ def test_load_data():
     # Invalid entry order: 2020-01-12 >= 2020-01-12
     with pytest.raises(ValueError):
         load_data(io.StringIO(yml))
+
+
+def test_compute_stats():
+    data_in = [
+        {'datetime': dt(2020, 1, 1).astimezone(), 'type': 'chkpt',
+         'cgt': 0.15},
+
+        {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'invest',
+         'inv_src': 500, 'rate': 100},
+        {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'chkpt'},
+
+        {'datetime': dt(2020, 2, 12).astimezone(), 'type': 'invest',
+         'inv_src': 500, 'rate': 100.8128},
+        {'datetime': dt(2020, 2, 12).astimezone(), 'type': 'chkpt'},
+
+        {'datetime': dt(2020, 3, 12).astimezone(), 'type': 'invest',
+         'inv_src': 500, 'rate': 101.5526},
+        {'datetime': dt(2020, 3, 12).astimezone(), 'type': 'chkpt'},
+    ]
+
+    # TODO
+    data_out = [
+        {'datetime': dt(2020, 1, 1).astimezone(), 'days': 0, 'tot_days': 0},
+        {'datetime': dt(2020, 1, 12).astimezone(), 'days': 0, 'tot_days': 0},
+        {'datetime': dt(2020, 2, 12).astimezone(), 'days': 0, 'tot_days': 0},
+        {'datetime': dt(2020, 3, 12).astimezone(), 'days': 0, 'tot_days': 0},
+    ]
+
+    # TODO
