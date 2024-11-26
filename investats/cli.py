@@ -90,6 +90,23 @@ def save_data(data: list[dict], file: TextIO):
         print(','.join(str(x[k]) if k in x else '-' for k in keys), file=file)
 
 
+def complete_invest_entry(entry_in: dict) -> dict:
+    '''
+    Complete an entry of type "invest" with the missing fields that can be
+    calculated from the others
+    '''
+    entry_out = entry_in.copy()
+
+    if 'inv_src' not in entry_out:
+        entry_out['inv_src'] = entry_out['inv_dst'] * entry_out['rate']
+    elif 'inv_dst' not in entry_out:
+        entry_out['inv_dst'] = entry_out['inv_src'] / entry_out['rate']
+    elif 'rate' not in entry_out:
+        entry_out['rate'] = entry_out['inv_src'] / entry_out['inv_dst']
+
+    return entry_out
+
+
 def compute_stats(data: list[dict]):
     '''
     Computes the statistics

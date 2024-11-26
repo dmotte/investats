@@ -7,7 +7,7 @@ import pytest
 
 from datetime import datetime as dt
 
-from investats import load_data, compute_stats
+from investats import load_data, complete_invest_entry, compute_stats
 
 
 def test_load_data():
@@ -98,6 +98,15 @@ def test_load_data():
     # Invalid entry order: 2020-01-12 >= 2020-01-12
     with pytest.raises(ValueError):
         load_data(io.StringIO(yml))
+
+
+def test_complete_invest_entry():
+    assert complete_invest_entry({'inv_dst': 100, 'rate': 3}) == \
+        {'inv_src': 300, 'inv_dst': 100, 'rate': 3}
+    assert complete_invest_entry({'inv_src': 100, 'rate': 8}) == \
+        {'inv_src': 100, 'inv_dst': 12.5, 'rate': 8}
+    assert complete_invest_entry({'inv_src': 100, 'inv_dst': 20}) == \
+        {'inv_src': 100, 'inv_dst': 20, 'rate': 5}
 
 
 def test_compute_stats():
