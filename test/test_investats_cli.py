@@ -7,7 +7,7 @@ import pytest
 
 from datetime import datetime as dt
 
-from investats import load_data
+from investats import load_data, compute_stats
 
 
 def test_load_data():
@@ -21,14 +21,15 @@ def test_load_data():
 
     data = load_data(io.StringIO(yml))
 
-    assert data[0] == {'datetime': dt(2020, 1, 12).astimezone(),
-                       'type': 'invest', 'inv_src': 500, 'rate': 100}
-    assert data[1] == {'datetime': dt(2020, 1, 12).astimezone(),
-                       'type': 'chkpt', 'cgt': 0.15}
-    assert data[2] == {'datetime': dt(2020, 2, 12).astimezone(),
-                       'type': 'invest', 'inv_src': 500, 'rate': 100.6558}
-    assert data[3] == {'datetime': dt(2020, 2, 12, 1, 23, 45).astimezone(),
-                       'type': 'chkpt'}
+    assert data == [
+        {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'invest',
+         'inv_src': 500, 'rate': 100},
+        {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'chkpt',
+         'cgt': 0.15},
+        {'datetime': dt(2020, 2, 12).astimezone(), 'type': 'invest',
+         'inv_src': 500, 'rate': 100.6558},
+        {'datetime': dt(2020, 2, 12, 1, 23, 45).astimezone(), 'type': 'chkpt'},
+    ]
 
     yml = textwrap.dedent('''\
         ---
@@ -117,12 +118,17 @@ def test_compute_stats():
         {'datetime': dt(2020, 3, 12).astimezone(), 'type': 'chkpt'},
     ]
 
-    # TODO
-    data_out = [
-        {'datetime': dt(2020, 1, 1).astimezone(), 'days': 0, 'tot_days': 0},
-        {'datetime': dt(2020, 1, 12).astimezone(), 'days': 0, 'tot_days': 0},
-        {'datetime': dt(2020, 2, 12).astimezone(), 'days': 0, 'tot_days': 0},
-        {'datetime': dt(2020, 3, 12).astimezone(), 'days': 0, 'tot_days': 0},
+    data_out = list(compute_stats(data_in))
+
+    assert data_out == [
+        {'datetime': dt(2020, 1, 1).astimezone(),
+         'diff_days': 0, 'tot_days': 0},
+        {'datetime': dt(2020, 1, 12).astimezone(),
+         'diff_days': 11, 'tot_days': 11},
+        {'datetime': dt(2020, 2, 12).astimezone(),
+         'diff_days': 31, 'tot_days': 42},
+        {'datetime': dt(2020, 3, 12).astimezone(),
+         'diff_days': 29, 'tot_days': 71},
     ]
 
     # TODO

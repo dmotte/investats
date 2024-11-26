@@ -96,11 +96,31 @@ def compute_stats(data: list[dict]):
     '''
     data = [x.copy() for x in data]
 
-    for index, entry in enumerate(data):
-        # TODO logic!
-        entry['test'] = 100 + index
+    prev = None
 
-        yield entry
+    for entry_in in data:
+        if entry_in['type'] == 'invest':
+            pass  # TODO
+        elif entry_in['type'] == 'chkpt':
+            entry_out = {'datetime': entry_in['datetime']}
+
+            if prev is None:
+                entry_out['diff_days'] = 0
+                entry_out['tot_days'] = 0
+            else:
+                entry_out['diff_days'] = (
+                    entry_out['datetime'] - prev['datetime']
+                ).total_seconds() / 60 / 60 / 24
+                entry_out['tot_days'] = prev['tot_days'] + \
+                    entry_out['diff_days']
+
+            # TODO
+
+            prev = entry_out
+
+            yield entry_out
+        else:
+            raise ValueError('Invalid entry type: ' + str(entry_in['type']))
 
 
 def main(argv=None):
