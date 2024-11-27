@@ -137,6 +137,19 @@ def compute_stats(data: list[dict]):
                 entry_out['tot_days'] = prev_out['tot_days'] + \
                     entry_out['diff_days']
 
+            entry_out['diff_src'], entry_out['diff_dst'] = diff_src, diff_dst
+            entry_out['latest_rate'] = latest_rate
+
+            if prev_out is None:
+                entry_out['tot_src'] = diff_src
+                entry_out['tot_dst'] = diff_dst
+            else:
+                entry_out['tot_src'] = prev_out['tot_src'] + diff_src
+                entry_out['tot_dst'] = prev_out['tot_dst'] + diff_dst
+
+            entry_out['avg_rate'] = 0 if entry_out['tot_dst'] == 0 \
+                else entry_out['tot_src'] / entry_out['tot_dst']
+
             # TODO
 
             diff_src, diff_dst = 0, 0
