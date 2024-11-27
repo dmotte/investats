@@ -127,6 +127,9 @@ def compute_stats(data: list[dict]):
         elif entry_in['type'] == 'chkpt':
             entry_out = {'datetime': entry_in['datetime']}
 
+            # - diff_days: how many days have passed since the last checkpoint
+            # - tot_days: how many days have passed since the first checkpoint
+
             if prev_out is None:
                 entry_out['diff_days'] = 0
                 entry_out['tot_days'] = 0
@@ -137,8 +140,16 @@ def compute_stats(data: list[dict]):
                 entry_out['tot_days'] = prev_out['tot_days'] + \
                     entry_out['diff_days']
 
+            # - diff_src: invested SRC since the last checkpoint
+            # - diff_dst: invested DST since the last checkpoint
+            # - latest_rate: latest SRC/DST rate (at the latest operation)
+
             entry_out['diff_src'], entry_out['diff_dst'] = diff_src, diff_dst
             entry_out['latest_rate'] = latest_rate
+
+            # - tot_src: total invested SRC
+            # - tot_dst: total invested DST
+            # - avg_rate: ratio between tot_src and tot_dst
 
             if prev_out is None:
                 entry_out['tot_src'] = diff_src
@@ -149,6 +160,11 @@ def compute_stats(data: list[dict]):
 
             entry_out['avg_rate'] = 0 if entry_out['tot_dst'] == 0 \
                 else entry_out['tot_src'] / entry_out['tot_dst']
+
+            # - tot_dst_as_src: how many SRC would be obtained by converting
+            #   tot_dst using latest_rate
+
+            entry_out['tot_dst_as_src'] = entry_out['tot_dst'] * latest_rate
 
             # TODO
 

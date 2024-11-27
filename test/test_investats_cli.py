@@ -112,18 +112,19 @@ def test_complete_invest_entry():
 def test_compute_stats():
     data_in = [
         {'datetime': dt(2020, 1, 1).astimezone(), 'type': 'chkpt',
-         'cgt': 0.15},
+         'notes': 'First checkpoint'},
 
         {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'invest',
          'inv_src': 500, 'rate': 100},
-        {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'chkpt'},
+        {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'chkpt',
+         'cgt': 0.15},
 
         {'datetime': dt(2020, 2, 12).astimezone(), 'type': 'invest',
          'inv_src': 700, 'rate': 70},
         {'datetime': dt(2020, 2, 12).astimezone(), 'type': 'chkpt'},
 
         {'datetime': dt(2020, 3, 10).astimezone(), 'type': 'invest',
-         'inv_src': 200, 'rate': 50},
+         'inv_src': 200, 'rate': 50, 'notes': 'Some notes here'},
         {'datetime': dt(2020, 3, 12).astimezone(), 'type': 'invest',
          'inv_src': 50, 'rate': 200},
         {'datetime': dt(2020, 3, 12).astimezone(), 'type': 'chkpt'},
@@ -135,19 +136,23 @@ def test_compute_stats():
         {'datetime': dt(2020, 1, 1).astimezone(),
          'diff_days': 0, 'tot_days': 0,
          'diff_src': 0, 'diff_dst': 0, 'latest_rate': 0,
-         'tot_src': 0, 'tot_dst': 0, 'avg_rate': 0},
+         'tot_src': 0, 'tot_dst': 0, 'avg_rate': 0,
+         'tot_dst_as_src': 0},
         {'datetime': dt(2020, 1, 12).astimezone(),
          'diff_days': 11, 'tot_days': 11,
          'diff_src': 500, 'diff_dst': 5, 'latest_rate': 100,
-         'tot_src': 500, 'tot_dst': 5, 'avg_rate': 100},
+         'tot_src': 500, 'tot_dst': 5, 'avg_rate': 100,
+         'tot_dst_as_src': 500},
         {'datetime': dt(2020, 2, 12).astimezone(),
          'diff_days': 31, 'tot_days': 42,
          'diff_src': 700, 'diff_dst': 10, 'latest_rate': 70,
-         'tot_src': 1200, 'tot_dst': 15, 'avg_rate': 80},
+         'tot_src': 1200, 'tot_dst': 15, 'avg_rate': 80,
+         'tot_dst_as_src': 1050},
         {'datetime': dt(2020, 3, 12).astimezone(),
          'diff_days': 29, 'tot_days': 71,
          'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
-         'tot_src': 1450, 'tot_dst': 19.25, 'avg_rate': 75.32467532467533},
+         'tot_src': 1450, 'tot_dst': 19.25, 'avg_rate': 75.32467532467533,
+         'tot_dst_as_src': 3850},
     ]
 
     # TODO
