@@ -76,12 +76,14 @@ def save_data(data: list[dict], file: TextIO):
     data = [x.copy() for x in data]
 
     # TODO formats for the following categories (with sensible value in
-    # parentheses, for the example):
+    # parentheses, for the "e.g." in flags):
     #   - fmt_days (2)
     #   - fmt_src (2)
-    #   - fmt_dst (4) (common one, in case of multiple assets, in future version)
+    #   - fmt_dst (4)
     #   - fmt_rate (6)
     #   - fmt_yield (4)
+
+    # TODO hint: format for 'datetime' and 'latest_cgt' is just str(...)
 
     # TODO better print (see apycalc)
     keys = list(data[0].keys())
