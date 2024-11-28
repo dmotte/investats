@@ -216,7 +216,10 @@ def compute_stats(data: list[dict]):
             # - tot_gain_src: gain w.r.t. tot_src
             # - tot_gain_net_src: net gain w.r.t. tot_src
 
-            # TODO implementation
+            entry_out['tot_gain_src'] = \
+                entry_out['tot_dst_as_src'] - entry_out['tot_src']
+            entry_out['tot_gain_net_src'] = \
+                entry_out['tot_gain_src'] * (1 - entry_out['latest_cgt'])
 
             diff_src, diff_dst = 0, 0
 
