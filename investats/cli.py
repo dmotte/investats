@@ -121,6 +121,10 @@ def compute_stats(data: list[dict]):
         if entry_in['type'] == 'invest':
             entry_in = complete_invest_entry(entry_in)
 
+            # - inv_src: invested SRC
+            # - inv_dst: invested DST
+            # - rate: current SRC/DST rate
+
             diff_src += entry_in['inv_src']
             diff_dst += entry_in['inv_dst']
             latest_rate = entry_in['rate']
