@@ -204,7 +204,14 @@ def compute_stats(data: list[dict]):
             # - chkpt_gain_src: gain w.r.t. the last checkpoint
             # - chkpt_gain_net_src: net gain w.r.t. the last checkpoint
 
-            # TODO implementation
+            if prev_out is None:
+                entry_out['chkpt_gain_src'] = 0
+                entry_out['chkpt_gain_net_src'] = 0
+            else:
+                entry_out['chkpt_gain_src'] = entry_out['tot_dst_as_src'] - \
+                    (prev_out['tot_dst_as_src'] + entry_out['diff_src'])
+                entry_out['chkpt_gain_net_src'] = \
+                    entry_out['chkpt_gain_src'] * (1 - entry_out['latest_cgt'])
 
             # - tot_gain_src: gain w.r.t. tot_src
             # - tot_gain_net_src: net gain w.r.t. tot_src
