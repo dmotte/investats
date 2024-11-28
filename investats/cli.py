@@ -167,7 +167,7 @@ def compute_stats(data: list[dict]):
             entry_out['tot_dst_as_src'] = entry_out['tot_dst'] * latest_rate
 
             # - chkpt_yield: yield w.r.t. the last checkpoint
-            # - chkpt_apy: APY w.r.t the last checkpoint
+            # - chkpt_apy: APY w.r.t. the last checkpoint
 
             if prev_out is None or prev_out['latest_rate'] == 0:
                 entry_out['chkpt_yield'] = 0
@@ -179,7 +179,7 @@ def compute_stats(data: list[dict]):
                     365 / entry_out['diff_days']) - 1
 
             # - global_yield: yield w.r.t. avg_rate
-            # - global_apy: APY w.r.t avg_rate
+            # - global_apy: APY w.r.t. avg_rate
 
             # TODO implementation
 
