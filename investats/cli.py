@@ -178,7 +178,24 @@ def compute_stats(data: list[dict]):
                 entry_out['chkpt_apy'] = (1 + entry_out['chkpt_yield']) ** (
                     365 / entry_out['diff_days']) - 1
 
-            # TODO
+            # - global_yield: yield w.r.t. avg_rate
+            # - global_apy: APY w.r.t avg_rate
+
+            # TODO implementation
+
+            # - latest_cgt: TODO description
+
+            # TODO implementation
+
+            # - chkpt_gain_src: TODO description
+            # - chkpt_gain_net_src: TODO description
+
+            # TODO implementation
+
+            # - tot_gain_src: TODO description
+            # - tot_gain_net_src: TODO description
+
+            # TODO implementation
 
             diff_src, diff_dst = 0, 0
 
