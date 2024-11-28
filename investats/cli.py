@@ -183,17 +183,17 @@ def compute_stats(data: list[dict]):
 
             # TODO implementation
 
-            # - latest_cgt: TODO description
+            # - latest_cgt: latest CGT (Capital Gains Tax)
 
             # TODO implementation
 
-            # - chkpt_gain_src: TODO description
-            # - chkpt_gain_net_src: TODO description
+            # - chkpt_gain_src: gain w.r.t. the last checkpoint
+            # - chkpt_gain_net_src: net gain w.r.t. the last checkpoint
 
             # TODO implementation
 
-            # - tot_gain_src: TODO description
-            # - tot_gain_net_src: TODO description
+            # - tot_gain_src: gain w.r.t. tot_src
+            # - tot_gain_net_src: net gain w.r.t. tot_src
 
             # TODO implementation
 
