@@ -100,6 +100,10 @@ def test_load_data():
         load_data(io.StringIO(yml))
 
 
+def test_save_data():
+    pass  # TODO
+
+
 def test_complete_invest_entry():
     assert complete_invest_entry({'inv_dst': 100, 'rate': 3}) == \
         {'inv_src': 300, 'inv_dst': 100, 'rate': 3}
