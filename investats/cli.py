@@ -185,7 +185,14 @@ def compute_stats(data: list[dict]):
             # - global_yield: yield w.r.t. avg_rate
             # - global_apy: APY w.r.t. avg_rate
 
-            # TODO implementation
+            if entry_out['avg_rate'] == 0:
+                entry_out['global_yield'] = 0
+                entry_out['global_apy'] = 0
+            else:
+                entry_out['global_yield'] = \
+                    latest_rate / entry_out['avg_rate'] - 1
+                entry_out['global_apy'] = (1 + entry_out['global_yield']) ** (
+                    365 / entry_out['tot_days']) - 1
 
             # - latest_cgt: latest CGT (Capital Gains Tax)
 
