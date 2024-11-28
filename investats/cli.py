@@ -196,7 +196,10 @@ def compute_stats(data: list[dict]):
 
             # - latest_cgt: latest CGT (Capital Gains Tax)
 
-            # TODO implementation
+            entry_out['latest_cgt'] = \
+                entry_in['cgt'] if 'cgt' in entry_in \
+                else prev_out['latest_cgt'] if prev_out is not None \
+                else 0
 
             # - chkpt_gain_src: gain w.r.t. the last checkpoint
             # - chkpt_gain_net_src: net gain w.r.t. the last checkpoint
