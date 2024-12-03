@@ -208,32 +208,30 @@ def compute_stats(data: list[dict]):
             # - entry_out['chkpt_yield']: yield w.r.t. the last checkpoint
             # - entry_out['chkpt_apy']: APY w.r.t. the last checkpoint
 
-            if prev_out is None or prev_out['latest_rate'] == 0:
-                entry_out['chkpt_yield'] = 0
-                entry_out['chkpt_apy'] = 0
-            else:
-                entry_out['chkpt_yield'] = \
-                    latest_rate / prev_out['latest_rate'] - 1
-                entry_out['chkpt_apy'] = (1 + entry_out['chkpt_yield']) ** (
-                    365 / entry_out['diff_days']) - 1
+            entry_out['chkpt_yield'] = 0 if prev_out is None \
+                or prev_out['latest_rate'] == 0 \
+                else latest_rate / prev_out['latest_rate'] - 1
+
+            entry_out['chkpt_apy'] = 0 if entry_out['chkpt_yield'] == 0 \
+                or entry_out['diff_days'] == 0 \
+                else (1 + entry_out['chkpt_yield']) ** \
+                (365 / entry_out['diff_days']) - 1
 
             # - entry_out['global_yield']: yield w.r.t. avg_rate
             # - entry_out['global_apy']: APY w.r.t. avg_rate
 
-            if entry_out['avg_rate'] == 0 or entry_out['tot_days'] == 0:
-                entry_out['global_yield'] = 0
-                entry_out['global_apy'] = 0
-            else:
-                entry_out['global_yield'] = \
-                    latest_rate / entry_out['avg_rate'] - 1
-                entry_out['global_apy'] = (1 + entry_out['global_yield']) ** (
-                    365 / entry_out['tot_days']) - 1
+            entry_out['global_yield'] = 0 if entry_out['avg_rate'] == 0 \
+                else latest_rate / entry_out['avg_rate'] - 1
+
+            entry_out['global_apy'] = 0 if entry_out['global_yield'] == 0 \
+                or entry_out['tot_days'] == 0 \
+                else (1 + entry_out['global_yield']) ** \
+                (365 / entry_out['tot_days']) - 1
 
             # - entry_in['cgt']: Capital Gains Tax
             # - entry_out['latest_cgt']: latest CGT (Capital Gains Tax)
 
-            entry_out['latest_cgt'] = \
-                entry_in['cgt'] if 'cgt' in entry_in \
+            entry_out['latest_cgt'] = entry_in['cgt'] if 'cgt' in entry_in \
                 else prev_out['latest_cgt'] if prev_out is not None \
                 else 0
 
