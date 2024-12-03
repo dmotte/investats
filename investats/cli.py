@@ -136,8 +136,6 @@ def compute_stats(data: list[dict]):
     '''
     Computes the statistics
     '''
-    data = [x.copy() for x in data]
-
     prev_out = None
 
     diff_src, diff_dst, latest_rate = 0, 0, 0

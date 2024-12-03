@@ -204,7 +204,11 @@ def test_compute_stats():
         {'datetime': dt(2020, 3, 12).astimezone(), 'type': 'chkpt'},
     ]
 
+    data_in_copy = [x.copy() for x in data_in]
+
     data_out = list(compute_stats(data_in))
+
+    assert data_in == data_in_copy
 
     assert data_out == [
         {'datetime': dt(2020, 1, 1).astimezone(),
