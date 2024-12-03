@@ -7,7 +7,7 @@ import pytest
 
 from datetime import datetime as dt
 
-from investats import load_data, complete_invest_entry, compute_stats
+from investats import load_data, save_data, complete_invest_entry, compute_stats
 
 
 def test_load_data():
@@ -101,7 +101,62 @@ def test_load_data():
 
 
 def test_save_data():
-    pass  # TODO
+    data = [
+        {'datetime': dt(2020, 1, 1).astimezone(),
+         'diff_days': 0, 'tot_days': 0,
+         'diff_src': 0, 'diff_dst': 0, 'latest_rate': 0,
+         'tot_src': 0, 'tot_dst': 0, 'avg_rate': 0,
+         'tot_dst_as_src': 0,
+         'chkpt_yield': 0, 'chkpt_apy': 0,
+         'global_yield': 0, 'global_apy': 0,
+         'latest_cgt': 0,
+         'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
+         'tot_gain_src': 0, 'tot_gain_net_src': 0},
+        {'datetime': dt(2020, 1, 12).astimezone(),
+         'diff_days': 11, 'tot_days': 11,
+         'diff_src': 500, 'diff_dst': 5, 'latest_rate': 100,
+         'tot_src': 500, 'tot_dst': 5, 'avg_rate': 100,
+         'tot_dst_as_src': 500,
+         'chkpt_yield': 0, 'chkpt_apy': 0,
+         'global_yield': 0, 'global_apy': 0,
+         'latest_cgt': 0.15,
+         'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
+         'tot_gain_src': 0, 'tot_gain_net_src': 0},
+        {'datetime': dt(2020, 2, 12).astimezone(),
+         'diff_days': 31, 'tot_days': 42,
+         'diff_src': 700, 'diff_dst': 10, 'latest_rate': 70,
+         'tot_src': 1200, 'tot_dst': 15, 'avg_rate': 80,
+         'tot_dst_as_src': 1050,
+         'chkpt_yield': -0.30000000000000004, 'chkpt_apy': -0.9849978210304741,
+         'global_yield': -0.125, 'global_apy': -0.6866552911749941,
+         'latest_cgt': 0.15,
+         'chkpt_gain_src': -150, 'chkpt_gain_net_src': -127.5,
+         'tot_gain_src': -150, 'tot_gain_net_src': -127.5},
+        {'datetime': dt(2020, 3, 12).astimezone(),
+         'diff_days': 29, 'tot_days': 71,
+         'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
+         'tot_src': 1450, 'tot_dst': 19.25, 'avg_rate': 75.32467532467533,
+         'tot_dst_as_src': 3850,
+         'chkpt_yield': 1.8571428571428572, 'chkpt_apy': 547587.0028295065,
+         'global_yield': 1.6551724137931032, 'global_apy': 150.42410185614494,
+         'latest_cgt': 0.15,
+         'chkpt_gain_src': 2550, 'chkpt_gain_net_src': 2167.5,
+         'tot_gain_src': 2400, 'tot_gain_net_src': 2040},
+    ]
+
+    csv = textwrap.dedent('''\
+        datetime,diff_days,tot_days,diff_src,diff_dst,latest_rate,tot_src,tot_dst,avg_rate,tot_dst_as_src,chkpt_yield,chkpt_apy,global_yield,global_apy,latest_cgt,chkpt_gain_src,chkpt_gain_net_src,tot_gain_src,tot_gain_net_src
+        2020-01-01 00:00:00+01:00,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+        2020-01-12 00:00:00+01:00,11,11,500,5,100,500,5,100,500,0,0,0,0,0.15,0,0,0,0
+        2020-02-12 00:00:00+01:00,31,42,700,10,70,1200,15,80,1050,-0.30000000000000004,-0.9849978210304741,-0.125,-0.6866552911749941,0.15,-150,-127.5,-150,-127.5
+        2020-03-12 00:00:00+01:00,29,71,250,4.25,200,1450,19.25,75.32467532467533,3850,1.8571428571428572,547587.0028295065,1.6551724137931032,150.42410185614494,0.15,2550,2167.5,2400,2040
+    ''')
+
+    buf = io.StringIO()
+    save_data(data, buf)
+    buf.seek(0)
+
+    assert buf.read() == csv
 
 
 def test_complete_invest_entry():
@@ -178,5 +233,3 @@ def test_compute_stats():
          'chkpt_gain_src': 2550, 'chkpt_gain_net_src': 2167.5,
          'tot_gain_src': 2400, 'tot_gain_net_src': 2040},
     ]
-
-    # TODO

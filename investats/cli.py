@@ -69,27 +69,50 @@ def load_data(file: TextIO) -> list[dict]:
     return data
 
 
-def save_data(data: list[dict], file: TextIO):
+def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
+              fmt_src: str = '', fmt_dst: str = '', fmt_rate: str = '',
+              fmt_yield: str = ''):
     '''
     Saves data into a CSV file
     '''
-    data = [x.copy() for x in data]
+    func_days = str if fmt_days == '' else lambda x: fmt_days.format(x)
+    func_src = str if fmt_src == '' else lambda x: fmt_src.format(x)
+    func_dst = str if fmt_dst == '' else lambda x: fmt_dst.format(x)
+    func_rate = str if fmt_rate == '' else lambda x: fmt_rate.format(x)
+    func_yield = str if fmt_yield == '' else lambda x: fmt_yield.format(x)
 
-    # TODO formats for the following categories (with sensible value in
-    # parentheses, for the "e.g." in flags):
-    #   - fmt_days (2)
-    #   - fmt_src (2)
-    #   - fmt_dst (4)
-    #   - fmt_rate (6)
-    #   - fmt_yield (4)
+    fields = {
+        'datetime': str,
 
-    # TODO hint: format for 'datetime' and 'latest_cgt' is just str(...)
+        'diff_days': func_days,
+        'tot_days': func_days,
 
-    # TODO better print (see apycalc)
-    keys = list(data[0].keys())
-    print(','.join(keys), file=file)
+        'diff_src': func_src,
+        'diff_dst': func_dst,
+        'latest_rate': func_rate,
+
+        'tot_src': func_src,
+        'tot_dst': func_dst,
+        'avg_rate': func_rate,
+
+        'tot_dst_as_src': func_src,
+
+        'chkpt_yield': func_yield,
+        'chkpt_apy': func_yield,
+        'global_yield': func_yield,
+        'global_apy': func_yield,
+
+        'latest_cgt': str,
+
+        'chkpt_gain_src': func_src,
+        'chkpt_gain_net_src': func_src,
+        'tot_gain_src': func_src,
+        'tot_gain_net_src': func_src,
+    }
+
+    print(','.join(fields.keys()), file=file)
     for x in data:
-        print(','.join(str(x[k]) if k in x else '-' for k in keys), file=file)
+        print(','.join(f(x[k]) for k, f in fields.items()), file=file)
 
 
 def complete_invest_entry(entry_in: dict) -> dict:
@@ -249,9 +272,21 @@ def main(argv=None):
                         help='Output file. If set to "-" then stdout is used '
                         '(default: -)')
 
-    # TODO make sure that you use all the defined args
-
-    # TODO flags to format the values with format strings (see apycalc)
+    parser.add_argument('--fmt-days', type=str, default='',
+                        help='If specified, formats the days values with this '
+                        'format string (e.g. "{:.2f}")')
+    parser.add_argument('--fmt-src', type=str, default='',
+                        help='If specified, formats the SRC values with this '
+                        'format string (e.g. "{:.2f}")')
+    parser.add_argument('--fmt-dst', type=str, default='',
+                        help='If specified, formats the DST values with this '
+                        'format string (e.g. "{:.4f}")')
+    parser.add_argument('--fmt-rate', type=str, default='',
+                        help='If specified, formats the rate values with this '
+                        'format string (e.g. "{:.6f}")')
+    parser.add_argument('--fmt-yield', type=str, default='',
+                        help='If specified, formats the yield values with this '
+                        'format string (e.g. "{:.4f}")')
 
     args = parser.parse_args(argv[1:])
 
@@ -269,7 +304,8 @@ def main(argv=None):
     data_out = compute_stats(data_in)
 
     def lambda_write(data: list[dict], file: TextIO):
-        return save_data(data, file)
+        return save_data(data, file, args.fmt_days, args.fmt_src, args.fmt_dst,
+                         args.fmt_rate, args.fmt_yield)
 
     if args.file_out == '-':
         lambda_write(data_out, sys.stdout)
