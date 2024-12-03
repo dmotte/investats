@@ -217,7 +217,7 @@ def compute_stats(data: list[dict]):
             # - entry_out['global_yield']: yield w.r.t. avg_rate
             # - entry_out['global_apy']: APY w.r.t. avg_rate
 
-            if entry_out['avg_rate'] == 0:
+            if entry_out['avg_rate'] == 0 or entry_out['tot_days'] == 0:
                 entry_out['global_yield'] = 0
                 entry_out['global_apy'] = 0
             else:
