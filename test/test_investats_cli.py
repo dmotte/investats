@@ -103,7 +103,7 @@ def test_load_data():
 
 def test_save_data():
     data = [
-        {'datetime': dt(2020, 1, 1).astimezone(tz.utc),
+        {'datetime': dt(2020, 1, 1, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
          'diff_src': 0, 'diff_dst': 0, 'latest_rate': 0,
          'tot_src': 0, 'tot_dst': 0, 'avg_rate': 0,
@@ -113,7 +113,7 @@ def test_save_data():
          'latest_cgt': 0,
          'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
          'tot_gain_src': 0, 'tot_gain_net_src': 0},
-        {'datetime': dt(2020, 1, 12).astimezone(tz.utc),
+        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 11, 'tot_days': 11,
          'diff_src': 500, 'diff_dst': 5, 'latest_rate': 100,
          'tot_src': 500, 'tot_dst': 5, 'avg_rate': 100,
@@ -123,7 +123,7 @@ def test_save_data():
          'latest_cgt': 0.15,
          'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
          'tot_gain_src': 0, 'tot_gain_net_src': 0},
-        {'datetime': dt(2020, 2, 12).astimezone(tz.utc),
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
          'diff_days': 31, 'tot_days': 42,
          'diff_src': 700, 'diff_dst': 10, 'latest_rate': 70,
          'tot_src': 1200, 'tot_dst': 15, 'avg_rate': 80,
@@ -133,7 +133,7 @@ def test_save_data():
          'latest_cgt': 0.15,
          'chkpt_gain_src': -150, 'chkpt_gain_net_src': -127.5,
          'tot_gain_src': -150, 'tot_gain_net_src': -127.5},
-        {'datetime': dt(2020, 3, 12).astimezone(tz.utc),
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
          'diff_days': 29, 'tot_days': 71,
          'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
          'tot_src': 1450, 'tot_dst': 19.25, 'avg_rate': 75.32467532467533,
