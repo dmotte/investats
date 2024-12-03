@@ -143,21 +143,29 @@ def compute_stats(data: list[dict]):
     diff_src, diff_dst, latest_rate = 0, 0, 0
 
     for entry_in in data:
+        # - entry_in['datetime']: date and time of the entry (timezone-aware)
+        # - entry_in['type']: can be "invest" or "chkpt" (checkpoint)
+        # - entry_in['notes']: notes (optional)
+
         if entry_in['type'] == 'invest':
             entry_in = complete_invest_entry(entry_in)
 
-            # - inv_src: invested SRC
-            # - inv_dst: invested DST
-            # - rate: current SRC/DST rate
+            # - entry_in['inv_src']: invested SRC
+            # - entry_in['inv_dst']: invested DST
+            # - entry_in['rate']: current SRC/DST rate
 
             diff_src += entry_in['inv_src']
             diff_dst += entry_in['inv_dst']
             latest_rate = entry_in['rate']
         elif entry_in['type'] == 'chkpt':
-            entry_out = {'datetime': entry_in['datetime']}
+            entry_out = {}
 
-            # - diff_days: how many days have passed since the last checkpoint
-            # - tot_days: how many days have passed since the first checkpoint
+            # - entry_out['datetime']: same date and time of the checkpoint
+
+            entry_out['datetime'] = entry_in['datetime']
+
+            # - entry_out['diff_days']: days passed since the last checkpoint
+            # - entry_out['tot_days']: days passed since the first checkpoint
 
             if prev_out is None:
                 entry_out['diff_days'] = 0
@@ -169,16 +177,17 @@ def compute_stats(data: list[dict]):
                 entry_out['tot_days'] = prev_out['tot_days'] + \
                     entry_out['diff_days']
 
-            # - diff_src: invested SRC since the last checkpoint
-            # - diff_dst: invested DST since the last checkpoint
-            # - latest_rate: latest SRC/DST rate (at the latest operation)
+            # - entry_out['diff_src']: invested SRC since the last checkpoint
+            # - entry_out['diff_dst']: invested DST since the last checkpoint
+            # - entry_out['latest_rate']: latest SRC/DST rate (at the latest
+            #   operation)
 
             entry_out['diff_src'], entry_out['diff_dst'] = diff_src, diff_dst
             entry_out['latest_rate'] = latest_rate
 
-            # - tot_src: total invested SRC
-            # - tot_dst: total invested DST
-            # - avg_rate: ratio between tot_src and tot_dst
+            # - entry_out['tot_src']: total invested SRC
+            # - entry_out['tot_dst']: total invested DST
+            # - entry_out['avg_rate']: ratio between tot_src and tot_dst
 
             if prev_out is None:
                 entry_out['tot_src'] = diff_src
@@ -190,13 +199,13 @@ def compute_stats(data: list[dict]):
             entry_out['avg_rate'] = 0 if entry_out['tot_dst'] == 0 \
                 else entry_out['tot_src'] / entry_out['tot_dst']
 
-            # - tot_dst_as_src: how many SRC would be obtained by converting
-            #   tot_dst using latest_rate
+            # - entry_out['tot_dst_as_src']: how many SRC would be obtained by
+            #   converting tot_dst using latest_rate
 
             entry_out['tot_dst_as_src'] = entry_out['tot_dst'] * latest_rate
 
-            # - chkpt_yield: yield w.r.t. the last checkpoint
-            # - chkpt_apy: APY w.r.t. the last checkpoint
+            # - entry_out['chkpt_yield']: yield w.r.t. the last checkpoint
+            # - entry_out['chkpt_apy']: APY w.r.t. the last checkpoint
 
             if prev_out is None or prev_out['latest_rate'] == 0:
                 entry_out['chkpt_yield'] = 0
@@ -207,8 +216,8 @@ def compute_stats(data: list[dict]):
                 entry_out['chkpt_apy'] = (1 + entry_out['chkpt_yield']) ** (
                     365 / entry_out['diff_days']) - 1
 
-            # - global_yield: yield w.r.t. avg_rate
-            # - global_apy: APY w.r.t. avg_rate
+            # - entry_out['global_yield']: yield w.r.t. avg_rate
+            # - entry_out['global_apy']: APY w.r.t. avg_rate
 
             if entry_out['avg_rate'] == 0:
                 entry_out['global_yield'] = 0
@@ -219,15 +228,16 @@ def compute_stats(data: list[dict]):
                 entry_out['global_apy'] = (1 + entry_out['global_yield']) ** (
                     365 / entry_out['tot_days']) - 1
 
-            # - latest_cgt: latest CGT (Capital Gains Tax)
+            # - entry_in['cgt']: Capital Gains Tax
+            # - entry_out['latest_cgt']: latest CGT (Capital Gains Tax)
 
             entry_out['latest_cgt'] = \
                 entry_in['cgt'] if 'cgt' in entry_in \
                 else prev_out['latest_cgt'] if prev_out is not None \
                 else 0
 
-            # - chkpt_gain_src: gain w.r.t. the last checkpoint
-            # - chkpt_gain_net_src: net gain w.r.t. the last checkpoint
+            # - entry_out['chkpt_gain_src']: gain w.r.t. the last chkpt
+            # - entry_out['chkpt_gain_net_src']: net gain w.r.t. the last chkpt
 
             if prev_out is None:
                 entry_out['chkpt_gain_src'] = 0
@@ -238,8 +248,8 @@ def compute_stats(data: list[dict]):
                 entry_out['chkpt_gain_net_src'] = \
                     entry_out['chkpt_gain_src'] * (1 - entry_out['latest_cgt'])
 
-            # - tot_gain_src: gain w.r.t. tot_src
-            # - tot_gain_net_src: net gain w.r.t. tot_src
+            # - entry_out['tot_gain_src']: gain w.r.t. tot_src
+            # - entry_out['tot_gain_net_src']: net gain w.r.t. tot_src
 
             entry_out['tot_gain_src'] = \
                 entry_out['tot_dst_as_src'] - entry_out['tot_src']
