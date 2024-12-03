@@ -28,9 +28,33 @@ python3 -mvenv venv
 venv/bin/python3 -mpip install -r requirements.txt
 ```
 
-TODO
+> **Note**: we refer to the **source asset** of the investment with the **generic ticker symbol** `SRC`, and to the **destination asset** with `DST`.
 
-For more details on how to use this command, you can also refer to its help message (`--help`).
+Now we need some **input data** about some investments. You can generate dummy data using the `investats_gen` CLI entrypoint. Example commands:
+
+```bash
+python3 -minvestats_gen -d2021-01-01 -a.2 -c24 --fmt-rate='{:.4f}' data-AAA.yml
+python3 -minvestats_gen -d2021-06-01 -a.3 -c24 --fmt-rate='{:.4f}' data-BBB.yml
+```
+
+Now that we have the data, we can **compute the statistics** about the investments:
+
+```bash
+for i in AAA BBB; do
+    python3 -minvestats --fmt-{days,src}='{:.2f}' --fmt-{dst,yield}='{:.4f}' \
+        --fmt-rate='{:.6f}' "data-$i.yml" "stats-$i.csv"
+done
+```
+
+TODO aggregation
+
+And finally display some nice **plots** using the [`plots.py`](example/plots.py) script (which uses the [_Plotly_](https://github.com/plotly/plotly.py) Python library):
+
+```bash
+venv/bin/python3 plots.py TODO
+```
+
+For more details on how to use these commands, you can also refer to their help message (`--help`).
 
 ## Development
 
