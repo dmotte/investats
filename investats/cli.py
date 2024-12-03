@@ -24,6 +24,9 @@ def load_data(file: TextIO) -> list[dict]:
     '''
     data = yaml.safe_load(file)
 
+    if data[0]['type'] != 'invest':
+        raise ValueError('The first entry must be of type "invest"')
+
     # YAML supports parsing dates out of the box if they are in the correct
     # format (ISO-8601). See
     # https://symfony.com/doc/current/components/yaml/yaml_format.html#dates
