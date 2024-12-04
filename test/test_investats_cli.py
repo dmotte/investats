@@ -192,6 +192,30 @@ def test_complete_invest_entry():
     assert complete_invest_entry({'inv_src': 100, 'inv_dst': 20}) == \
         {'inv_src': 100, 'inv_dst': 20, 'rate': 5}
 
+    assert complete_invest_entry({'inv_dst': 0, 'rate': 3}) == \
+        {'inv_src': 0, 'inv_dst': 0, 'rate': 3}
+    assert complete_invest_entry({'inv_dst': 100, 'rate': 0}) == \
+        {'inv_src': 0, 'inv_dst': 100, 'rate': 0}
+
+    assert complete_invest_entry({'inv_src': 0, 'rate': 8}) == \
+        {'inv_src': 0, 'inv_dst': 0, 'rate': 8}
+    assert complete_invest_entry({'inv_src': 100, 'rate': 0}) == \
+        {'inv_src': 100, 'inv_dst': 0, 'rate': 0}
+
+    assert complete_invest_entry({'inv_src': 0, 'inv_dst': 20}) == \
+        {'inv_src': 0, 'inv_dst': 20, 'rate': 0}
+    assert complete_invest_entry({'inv_src': 100, 'inv_dst': 0}) == \
+        {'inv_src': 100, 'inv_dst': 0, 'rate': 0}
+
+    with pytest.raises(KeyError):
+        complete_invest_entry({'inv_src': 0})
+
+    with pytest.raises(KeyError):
+        complete_invest_entry({'inv_dst': 0})
+
+    with pytest.raises(KeyError):
+        complete_invest_entry({'rate': 0})
+
 
 def test_compute_stats():
     data_in = [

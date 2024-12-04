@@ -128,9 +128,11 @@ def complete_invest_entry(entry_in: dict) -> dict:
     if 'inv_src' not in entry_out:
         entry_out['inv_src'] = entry_out['inv_dst'] * entry_out['rate']
     elif 'inv_dst' not in entry_out:
-        entry_out['inv_dst'] = entry_out['inv_src'] / entry_out['rate']
+        entry_out['inv_dst'] = 0 if entry_out['rate'] == 0 else \
+            entry_out['inv_src'] / entry_out['rate']
     elif 'rate' not in entry_out:
-        entry_out['rate'] = entry_out['inv_src'] / entry_out['inv_dst']
+        entry_out['rate'] = 0 if entry_out['inv_dst'] == 0 else \
+            entry_out['inv_src'] / entry_out['inv_dst']
 
     return entry_out
 
