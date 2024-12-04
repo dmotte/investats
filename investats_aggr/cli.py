@@ -104,12 +104,10 @@ def aggregate_series(named_series: dict[str, list[dict]]):
         named_entries = {name: named_series[name][i] for name in names}
         entries = list(named_entries.values())
 
-        aggr = {k: entries[0][k] for k in KEYS_COMMON} | \
-            {k: sum(e[k] for e in entries) for k in KEYS_SUM} | \
-            {f'{name}:{k}': named_entries[name][k]
-             for name in names for k in keys_specific}
-
-        result.append(aggr)
+        result.append({k: entries[0][k] for k in KEYS_COMMON} |
+                      {k: sum(e[k] for e in entries) for k in KEYS_SUM} |
+                      {f'{name}:{k}': named_entries[name][k]
+                       for name in names for k in keys_specific})
 
     first_tot_dst_as_src = result[0]['tot_dst_as_src']
     prev_tot_dst_as_src = 0
