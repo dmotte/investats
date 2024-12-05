@@ -193,9 +193,9 @@ def main(argv=None):
 
     for name, file in pair_items_to_dict(args.pairs).items():
         with open(file, 'r') as f:
-            named_series[name] = load_data(f)
+            named_series[name] = list(load_data(f))
 
-    save_data(aggregate_series(named_series), sys.stdout, args.fmt_days,
+    save_data(list(aggregate_series(named_series)), sys.stdout, args.fmt_days,
               args.fmt_src, args.fmt_dst, args.fmt_rate, args.fmt_yield)
 
     return 0
