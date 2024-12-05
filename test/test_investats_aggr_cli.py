@@ -212,4 +212,23 @@ def test_aggregate_series():
          'global_yield': 7.1, 'global_apy': 336214.0873987736},
     ]
 
-    # TODO check errors with pytest.raises
+    with pytest.raises(ValueError):  # The number of series must be >= 2
+        list(aggregate_series({}))
+
+    named_series = {n: [x.copy() for x in s]
+                    for n, s in named_series_orig.items()}
+    del named_series['BBB'][2]
+    named_series_copy = {n: [x.copy() for x in s]
+                         for n, s in named_series.items()}
+    with pytest.raises(ValueError):  # Series are not all the same length
+        list(aggregate_series(named_series))
+    assert named_series == named_series_copy
+
+    named_series = {n: [x.copy() for x in s]
+                    for n, s in named_series_orig.items()}
+    named_series['AAA'][0]['datetime'] = dt(2020, 2, 13).astimezone()
+    named_series_copy = {n: [x.copy() for x in s]
+                         for n, s in named_series.items()}
+    with pytest.raises(ValueError):  # Mismatching checkpoint datetime
+        list(aggregate_series(named_series))
+    assert named_series == named_series_copy
