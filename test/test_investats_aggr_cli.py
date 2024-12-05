@@ -118,15 +118,14 @@ def test_aggregate_series():
          'tot_gain_src': 4700, 'tot_gain_net_src': 3760},
     ]
 
-    named_series = {'AAA': data_aaa, 'BBB': data_bbb}
+    named_series_orig = {'AAA': data_aaa, 'BBB': data_bbb}
 
+    named_series = {n: [x.copy() for x in s]
+                    for n, s in named_series_orig.items()}
     named_series_copy = {n: [x.copy() for x in s]
                          for n, s in named_series.items()}
-
     data_out = list(aggregate_series(named_series))
-
     assert named_series == named_series_copy
-
     assert data_out == [
         {'datetime': dt(2020, 1, 12).astimezone(),
          'diff_days': 0, 'tot_days': 0,

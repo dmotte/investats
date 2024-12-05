@@ -237,7 +237,7 @@ def test_complete_invest_entry():
 
 
 def test_compute_stats():
-    data_in = [
+    data_in_orig = [
         {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'invest',
          'inv_src': 500, 'rate': 100},
         {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'chkpt',
@@ -288,20 +288,15 @@ def test_compute_stats():
          'tot_gain_src': 2400, 'tot_gain_net_src': 2040},
     ]
 
+    data_in = [x.copy() for x in data_in_orig]
     data_in_copy = [x.copy() for x in data_in]
-
     data_out = list(compute_stats(data_in))
-
     assert data_in == data_in_copy
-
     assert data_out == data_out_expected
 
+    data_in = [x.copy() for x in data_in_orig]
     data_in[0]['datetime'] = dt(2020, 1, 1).astimezone()
-
     data_in_copy = [x.copy() for x in data_in]
-
     data_out = list(compute_stats(data_in))
-
     assert data_in == data_in_copy
-
     assert data_out == data_out_expected
