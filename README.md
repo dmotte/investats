@@ -34,7 +34,7 @@ Now we need some **input data** about some investments. You can generate dummy d
 
 ```bash
 python3 -minvestats_gen -d2021-01-01 -a.2 -c24 --fmt-rate='{:.4f}' data-AAA.yml
-python3 -minvestats_gen -d2021-06-01 -a.3 -c24 --fmt-rate='{:.4f}' data-BBB.yml
+python3 -minvestats_gen -d2021-01-01 -a.3 -c24 --fmt-rate='{:.4f}' data-BBB.yml
 ```
 
 > **Note**: each **input and output entry field** is described with a comment in the `compute_stats` function code. You can search for the string `# - entry_` in the [`investats/cli.py`](investats/cli.py) file to get an overview.
