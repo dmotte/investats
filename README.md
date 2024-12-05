@@ -48,7 +48,12 @@ for i in AAA BBB; do
 done
 ```
 
-TODO aggregation
+Then, we can **aggregate** the resulting data (related to multiple investments) into a single CSV file:
+
+```bash
+python3 -minvestats_aggr AAA stats-AAA.csv BBB stats-BBB.csv \
+    --fmt-{days,src}='{:.2f}' --fmt-{dst,yield}='{:.4f}' --fmt-rate='{:.6f}'
+```
 
 And finally display some nice **plots** using the [`plots.py`](example/plots.py) script (which uses the [_Plotly_](https://github.com/plotly/plotly.py) Python library):
 
