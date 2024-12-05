@@ -39,19 +39,21 @@ def test_load_data():
         - { datetime: 2020-02-12 01:23:45, type: chkpt }
     ''')
 
-    with pytest.raises(ValueError):  # The first entry must be of type "invest"
+    with pytest.raises(ValueError) as exc_info:
         load_data(io.StringIO(yml))
+    assert exc_info.value.args == ('The first entry must be of type "invest"',)
 
     yml = textwrap.dedent('''\
         ---
-        - { datetime: 2020-01-12, type: foo, inv_src: &inv 500, rate: 100.0000 }
+        - { datetime: 2020-01-12, type: invest, inv_src: &inv 500, rate: 100.0000 }
         - { datetime: 2020-01-12, type: chkpt, cgt: 0.15 }
-        - { datetime: 2020-02-12, type: invest, inv_src: *inv, rate: 100.6558 }
+        - { datetime: 2020-02-12, type: foo, inv_src: *inv, rate: 100.6558 }
         - { datetime: 2020-02-12 01:23:45, type: chkpt }
     ''')
 
-    with pytest.raises(ValueError):  # Invalid entry type: foo
+    with pytest.raises(ValueError) as exc_info:
         load_data(io.StringIO(yml))
+    assert exc_info.value.args == ('Invalid entry type: foo',)
 
     yml = textwrap.dedent('''\
         ---
@@ -61,8 +63,9 @@ def test_load_data():
         - { datetime: 2020-02-12 01:23:45, type: chkpt }
     ''')
 
-    with pytest.raises(ValueError):  # Invalid datetime type: foo
+    with pytest.raises(ValueError) as exc_info:
         load_data(io.StringIO(yml))
+    assert exc_info.value.args == ('Invalid datetime type: foo',)
 
     yml = textwrap.dedent('''\
         ---
@@ -72,7 +75,9 @@ def test_load_data():
         - { datetime: 2020-02-12 01:23:45, type: chkpt }
     ''')
 
-    with pytest.raises(ValueError):  # Invalid entry (inv_src + rate + inv_dst)
+    with pytest.raises(ValueError, match=r'Invalid entry {.+}: exactly two '
+                       r'values among "inv_src", "inv_dst" and "rate" must be '
+                       r'provided for each entry of type "invest"'):
         load_data(io.StringIO(yml))
 
     yml = textwrap.dedent('''\
@@ -83,32 +88,38 @@ def test_load_data():
         - { datetime: 2020-02-12 01:23:45, type: chkpt }
     ''')
 
-    with pytest.raises(ValueError):  # Invalid entry (only inv_src is present)
+    with pytest.raises(ValueError, match=r'Invalid entry {.+}: exactly two '
+                       r'values among "inv_src", "inv_dst" and "rate" must be '
+                       r'provided for each entry of type "invest"'):
         load_data(io.StringIO(yml))
 
     yml = textwrap.dedent('''\
         ---
-        - { datetime: 2020-01-12, type: invest, inv_src: &inv 500, rate: 100.0000 }
-        - { datetime: 2020-01-11, type: chkpt, cgt: 0.15 }
-        - { datetime: 2020-02-12, type: invest, inv_src: *inv, rate: 100.6558 }
-        - { datetime: 2020-02-12 01:23:45, type: chkpt }
+        - { datetime: 2020-01-12 00:00:00+00:00, type: invest, inv_src: &inv 500, rate: 100.0000 }
+        - { datetime: 2020-01-11 00:00:00+00:00, type: chkpt, cgt: 0.15 }
+        - { datetime: 2020-02-12 00:00:00+00:00, type: invest, inv_src: *inv, rate: 100.6558 }
+        - { datetime: 2020-02-12 01:23:45+00:00, type: chkpt }
     ''')
 
-    # Invalid entry order: 2020-01-12 > 2020-01-11
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as exc_info:
         load_data(io.StringIO(yml))
+    assert exc_info.value.args == (
+        'Invalid entry order: 2020-01-12 00:00:00+00:00 > '
+        '2020-01-11 00:00:00+00:00',)
 
     yml = textwrap.dedent('''\
         ---
-        - { datetime: 2020-01-12, type: invest, inv_src: &inv 500, rate: 100.0000 }
-        - { datetime: 2020-01-12, type: chkpt, cgt: 0.15 }
-        - { datetime: 2020-01-12, type: invest, inv_src: *inv, rate: 100.6558 }
-        - { datetime: 2020-02-12 01:23:45, type: chkpt }
+        - { datetime: 2020-01-12 00:00:00+00:00, type: invest, inv_src: &inv 500, rate: 100.0000 }
+        - { datetime: 2020-01-12 00:00:00+00:00, type: chkpt, cgt: 0.15 }
+        - { datetime: 2020-01-12 00:00:00+00:00, type: invest, inv_src: *inv, rate: 100.6558 }
+        - { datetime: 2020-02-12 01:23:45+00:00, type: chkpt }
     ''')
 
-    # Invalid entry order: 2020-01-12 >= 2020-01-12
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as exc_info:
         load_data(io.StringIO(yml))
+    assert exc_info.value.args == (
+        'Invalid entry order: 2020-01-12 00:00:00+00:00 >= '
+        '2020-01-12 00:00:00+00:00',)
 
 
 def test_save_data():
@@ -226,37 +237,40 @@ def test_complete_invest_entry():
     assert complete_invest_entry({'inv_src': 100, 'inv_dst': 0}) == \
         {'inv_src': 100, 'inv_dst': 0, 'rate': 0}
 
-    with pytest.raises(KeyError):
+    with pytest.raises(KeyError) as exc_info:
         complete_invest_entry({'inv_src': 0})
+    assert exc_info.value.args == ('rate',)
 
-    with pytest.raises(KeyError):
+    with pytest.raises(KeyError) as exc_info:
         complete_invest_entry({'inv_dst': 0})
+    assert exc_info.value.args == ('rate',)
 
-    with pytest.raises(KeyError):
+    with pytest.raises(KeyError) as exc_info:
         complete_invest_entry({'rate': 0})
+    assert exc_info.value.args == ('inv_dst',)
 
 
 def test_compute_stats():
     data_in_orig = [
-        {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'invest',
+        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'invest',
          'inv_src': 500, 'rate': 100},
-        {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'chkpt',
+        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'chkpt',
          'notes': 'First checkpoint'},
 
-        {'datetime': dt(2020, 2, 12).astimezone(), 'type': 'invest',
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'invest',
          'inv_src': 700, 'rate': 70},
-        {'datetime': dt(2020, 2, 12).astimezone(), 'type': 'chkpt',
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'chkpt',
          'cgt': 0.15},
 
-        {'datetime': dt(2020, 3, 10).astimezone(), 'type': 'invest',
+        {'datetime': dt(2020, 3, 10, tzinfo=tz.utc), 'type': 'invest',
          'inv_src': 200, 'rate': 50, 'notes': 'Some notes here'},
-        {'datetime': dt(2020, 3, 12).astimezone(), 'type': 'invest',
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'invest',
          'inv_src': 50, 'rate': 200},
-        {'datetime': dt(2020, 3, 12).astimezone(), 'type': 'chkpt'},
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'chkpt'},
     ]
 
     data_out_expected = [
-        {'datetime': dt(2020, 1, 12).astimezone(),
+        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
          'diff_src': 500, 'diff_dst': 5, 'latest_rate': 100,
          'tot_src': 500, 'tot_dst': 5, 'avg_rate': 100,
@@ -266,7 +280,7 @@ def test_compute_stats():
          'latest_cgt': 0,
          'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
          'tot_gain_src': 0, 'tot_gain_net_src': 0},
-        {'datetime': dt(2020, 2, 12).astimezone(),
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
          'diff_days': 31, 'tot_days': 31,
          'diff_src': 700, 'diff_dst': 10, 'latest_rate': 70,
          'tot_src': 1200, 'tot_dst': 15, 'avg_rate': 80,
@@ -276,7 +290,7 @@ def test_compute_stats():
          'latest_cgt': 0.15,
          'chkpt_gain_src': -150, 'chkpt_gain_net_src': -127.5,
          'tot_gain_src': -150, 'tot_gain_net_src': -127.5},
-        {'datetime': dt(2020, 3, 12).astimezone(),
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
          'diff_days': 29, 'tot_days': 60,
          'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
          'tot_src': 1450, 'tot_dst': 19.25, 'avg_rate': 75.32467532467533,
@@ -295,7 +309,7 @@ def test_compute_stats():
     assert data_out == data_out_expected
 
     data_in = [x.copy() for x in data_in_orig]
-    data_in[0]['datetime'] = dt(2020, 1, 1).astimezone()
+    data_in[0]['datetime'] = dt(2020, 1, 1, tzinfo=tz.utc)
     data_in_copy = [x.copy() for x in data_in]
     data_out = list(compute_stats(data_in))
     assert data_in == data_in_copy

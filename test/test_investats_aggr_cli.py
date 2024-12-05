@@ -17,12 +17,14 @@ def test_pair_items_to_dict():
     assert pair_items_to_dict(['A', 'aaa', 'B', 'bbb', 'C', 'ccc']) == \
         {'A': 'aaa', 'B': 'bbb', 'C': 'ccc'}
 
-    # The length of pair items must be an even number
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as exc_info:
         pair_items_to_dict(['A', 'aaa', 'B'])
+    assert exc_info.value.args == (
+        'The length of pair items must be an even number',)
 
-    with pytest.raises(ValueError):  # The number of pairs must be >= 2
+    with pytest.raises(ValueError) as exc_info:
         pair_items_to_dict(['A', 'aaa'])
+    assert exc_info.value.args == ('The number of pairs must be >= 2',)
 
 
 def test_load_data():
@@ -54,7 +56,7 @@ def test_save_data():
 
 def test_aggregate_series():
     data_aaa = [
-        {'datetime': dt(2020, 1, 12).astimezone(),
+        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
          'diff_src': 500, 'diff_dst': 5, 'latest_rate': 100,
          'tot_src': 500, 'tot_dst': 5, 'avg_rate': 100,
@@ -64,7 +66,7 @@ def test_aggregate_series():
          'latest_cgt': 0,
          'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
          'tot_gain_src': 0, 'tot_gain_net_src': 0},
-        {'datetime': dt(2020, 2, 12).astimezone(),
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
          'diff_days': 31, 'tot_days': 31,
          'diff_src': 700, 'diff_dst': 10, 'latest_rate': 70,
          'tot_src': 1200, 'tot_dst': 15, 'avg_rate': 80,
@@ -74,7 +76,7 @@ def test_aggregate_series():
          'latest_cgt': 0.15,
          'chkpt_gain_src': -150, 'chkpt_gain_net_src': -127.5,
          'tot_gain_src': -150, 'tot_gain_net_src': -127.5},
-        {'datetime': dt(2020, 3, 12).astimezone(),
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
          'diff_days': 29, 'tot_days': 60,
          'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
          'tot_src': 1450, 'tot_dst': 19.25, 'avg_rate': 75.32467532467533,
@@ -86,7 +88,7 @@ def test_aggregate_series():
          'tot_gain_src': 2400, 'tot_gain_net_src': 2040},
     ]
     data_bbb = [
-        {'datetime': dt(2020, 1, 12).astimezone(),
+        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
          'diff_src': 500, 'diff_dst': 10, 'latest_rate': 50,
          'tot_src': 500, 'tot_dst': 10, 'avg_rate': 50,
@@ -96,7 +98,7 @@ def test_aggregate_series():
          'latest_cgt': 0,
          'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
          'tot_gain_src': 0, 'tot_gain_net_src': 0},
-        {'datetime': dt(2020, 2, 12).astimezone(),
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
          'diff_days': 31, 'tot_days': 31,
          'diff_src': 1400, 'diff_dst': 20, 'latest_rate': 70,
          'tot_src': 1900, 'tot_dst': 30, 'avg_rate': 63.333333333333336,
@@ -106,7 +108,7 @@ def test_aggregate_series():
          'latest_cgt': 0.20,
          'chkpt_gain_src': 200, 'chkpt_gain_net_src': 160,
          'tot_gain_src': 200, 'tot_gain_net_src': 160},
-        {'datetime': dt(2020, 3, 12).astimezone(),
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
          'diff_days': 29, 'tot_days': 60,
          'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
          'tot_src': 2150, 'tot_dst': 34.25, 'avg_rate': 62.77372262773723,
@@ -127,7 +129,7 @@ def test_aggregate_series():
     data_out = list(aggregate_series(named_series))
     assert named_series == named_series_copy
     assert data_out == [
-        {'datetime': dt(2020, 1, 12).astimezone(),
+        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
 
          'diff_src': 1000, 'tot_src': 1000, 'tot_dst_as_src': 1000,
@@ -155,7 +157,7 @@ def test_aggregate_series():
          'chkpt_yield': 0, 'chkpt_apy': 0,
          'global_yield': 0, 'global_apy': 0},
 
-        {'datetime': dt(2020, 2, 12).astimezone(),
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
          'diff_days': 31, 'tot_days': 31,
 
          'diff_src': 2100, 'tot_src': 3100, 'tot_dst_as_src': 3150,
@@ -183,7 +185,7 @@ def test_aggregate_series():
          'chkpt_yield': 0.05, 'chkpt_apy': 0.7761797254076475,
          'global_yield': 0.05, 'global_apy': 0.7761797254076475},
 
-        {'datetime': dt(2020, 3, 12).astimezone(),
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
          'diff_days': 29, 'tot_days': 60,
 
          'diff_src': 500, 'tot_src': 3600, 'tot_dst_as_src': 10_700,
@@ -212,23 +214,29 @@ def test_aggregate_series():
          'global_yield': 7.1, 'global_apy': 336214.0873987736},
     ]
 
-    with pytest.raises(ValueError):  # The number of series must be >= 2
+    with pytest.raises(ValueError) as exc_info:
         list(aggregate_series({}))
+    assert exc_info.value.args == ('The number of series must be >= 2',)
 
     named_series = {n: [x.copy() for x in s]
                     for n, s in named_series_orig.items()}
     del named_series['BBB'][2]
     named_series_copy = {n: [x.copy() for x in s]
                          for n, s in named_series.items()}
-    with pytest.raises(ValueError):  # Series are not all the same length
+    with pytest.raises(ValueError) as exc_info:
         list(aggregate_series(named_series))
+    assert exc_info.value.args == (
+        'Series are not all the same length: 2 != 3',)
     assert named_series == named_series_copy
 
     named_series = {n: [x.copy() for x in s]
                     for n, s in named_series_orig.items()}
-    named_series['AAA'][0]['datetime'] = dt(2020, 2, 13).astimezone()
+    named_series['AAA'][0]['datetime'] = dt(2020, 2, 13, tzinfo=tz.utc)
     named_series_copy = {n: [x.copy() for x in s]
                          for n, s in named_series.items()}
-    with pytest.raises(ValueError):  # Mismatching checkpoint datetime
+    with pytest.raises(ValueError) as exc_info:
         list(aggregate_series(named_series))
+    assert exc_info.value.args == (
+        'Mismatching checkpoint datetime: '
+        '2020-01-12 00:00:00+00:00 != 2020-02-13 00:00:00+00:00',)
     assert named_series == named_series_copy
