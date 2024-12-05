@@ -214,6 +214,15 @@ def test_save_data():
 
     assert buf.read() == csv
 
+    data_bad = [{'datetime': 12345, 'asdfghjkl': 67890},
+                {'datetime': 11223, 'asdfghjkl': 34455},
+                {'datetime': 66778, 'asdfghjkl': 89900}]
+
+    buf = io.StringIO()
+    with pytest.raises(ValueError) as exc_info:
+        save_data(data_bad, buf)
+    assert exc_info.value.args == ('Unsupported key: asdfghjkl',)
+
 
 def test_aggregate_series():
     data_aaa = [
