@@ -66,16 +66,16 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
                              ':tot_gain_src', ':tot_gain_net_src')):
             return func_src
 
-        if key.endswith('::diff_dst', ':tot_dst'):
+        if key.endswith((':diff_dst', ':tot_dst')):
             return func_dst
 
-        if key.endswith(':latest_rate', ':avg_rate'):
+        if key.endswith((':latest_rate', ':avg_rate')):
             return func_rate
 
         if key in ['chkpt_yield', 'chkpt_apy',
                    'global_yield', 'global_apy'] \
-            or key.endswith(':chkpt_yield', ':chkpt_apy',
-                            ':global_yield', ':global_apy'):
+            or key.endswith((':chkpt_yield', ':chkpt_apy',
+                            ':global_yield', ':global_apy')):
             return func_yield
 
         raise ValueError(f'Unsupported key: {key}')
