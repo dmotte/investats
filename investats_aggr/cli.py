@@ -55,7 +55,28 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
         if key == 'datetime' or key.endswith(':latest_cgt'):
             return str
 
-        # TODO
+        if key in ['diff_days', 'tot_days']:
+            return func_days
+
+        if key in ['diff_src', 'tot_src', 'tot_dst_as_src',
+                   'chkpt_gain_src', 'chkpt_gain_net_src',
+                   'tot_gain_src', 'tot_gain_net_src'] \
+            or key.endswith((':diff_src', ':tot_src', ':tot_dst_as_src',
+                             ':chkpt_gain_src', ':chkpt_gain_net_src',
+                             ':tot_gain_src', ':tot_gain_net_src')):
+            return func_src
+
+        if key.endswith('::diff_dst', ':tot_dst'):
+            return func_dst
+
+        if key.endswith(':latest_rate', ':avg_rate'):
+            return func_rate
+
+        if key in ['chkpt_yield', 'chkpt_apy',
+                   'global_yield', 'global_apy'] \
+            or key.endswith(':chkpt_yield', ':chkpt_apy',
+                            ':global_yield', ':global_apy'):
+            return func_yield
 
         raise ValueError(f'Unsupported key: {key}')
 
