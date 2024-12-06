@@ -92,6 +92,10 @@ def main(argv=None):
             hover_data=['tot_days'],
             markers=True,
         )
+        for k in data[0].keys():
+            if not k.endswith(':avg_rate'):
+                continue
+            fig.add_hline(annotation_text=k, y=data[-1][k], line_color='#0c0')
         fig.show()
 
     if args.plot_gain:
