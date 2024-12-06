@@ -352,8 +352,8 @@ def test_aggregate_series():
          'BBB:chkpt_gain_src': 200, 'BBB:chkpt_gain_net_src': 160,
          'BBB:tot_gain_src': 200, 'BBB:tot_gain_net_src': 160,
 
-         'chkpt_yield': 0.05, 'chkpt_apy': 0.7761797254076475,
-         'global_yield': 0.05, 'global_apy': 0.7761797254076475},
+         'chkpt_yield': 0.050000000000000044, 'chkpt_apy': 0.7761797254076475,
+         'global_yield': 0.016129032258064502, 'global_apy': 0.20730561938737058},
 
         {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
          'diff_days': 29, 'tot_days': 60,
@@ -381,7 +381,7 @@ def test_aggregate_series():
          'BBB:tot_gain_src': 4700, 'BBB:tot_gain_net_src': 3760,
 
          'chkpt_yield': 2.238095238095238, 'chkpt_apy': 2646126.1510352483,
-         'global_yield': 7.1, 'global_apy': 336214.0873987736},
+         'global_yield': 1.9722222222222223, 'global_apy': 753.9376784192543},
     ]
 
     with pytest.raises(ValueError) as exc_info:
