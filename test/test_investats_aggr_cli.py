@@ -5,6 +5,7 @@ import textwrap
 
 import pytest
 
+from copy import deepcopy
 from datetime import datetime as dt
 from datetime import timezone as tz
 
@@ -292,10 +293,8 @@ def test_aggregate_series():
 
     named_series_orig = {'AAA': data_aaa, 'BBB': data_bbb}
 
-    named_series = {n: [x.copy() for x in s]
-                    for n, s in named_series_orig.items()}
-    named_series_copy = {n: [x.copy() for x in s]
-                         for n, s in named_series.items()}
+    named_series = deepcopy(named_series_orig)
+    named_series_copy = deepcopy(named_series)
     data_out = list(aggregate_series(named_series))
     assert named_series == named_series_copy
     assert data_out == [
@@ -388,22 +387,18 @@ def test_aggregate_series():
         list(aggregate_series({}))
     assert exc_info.value.args == ('The number of series must be >= 2',)
 
-    named_series = {n: [x.copy() for x in s]
-                    for n, s in named_series_orig.items()}
+    named_series = deepcopy(named_series_orig)
     del named_series['BBB'][2]
-    named_series_copy = {n: [x.copy() for x in s]
-                         for n, s in named_series.items()}
+    named_series_copy = deepcopy(named_series)
     with pytest.raises(ValueError) as exc_info:
         list(aggregate_series(named_series))
     assert exc_info.value.args == (
         'Series are not all the same length: 2 != 3',)
     assert named_series == named_series_copy
 
-    named_series = {n: [x.copy() for x in s]
-                    for n, s in named_series_orig.items()}
+    named_series = deepcopy(named_series_orig)
     named_series['AAA'][0]['datetime'] = dt(2020, 2, 13, tzinfo=tz.utc)
-    named_series_copy = {n: [x.copy() for x in s]
-                         for n, s in named_series.items()}
+    named_series_copy = deepcopy(named_series)
     with pytest.raises(ValueError) as exc_info:
         list(aggregate_series(named_series))
     assert exc_info.value.args == (
