@@ -130,28 +130,29 @@ def aggregate_series(named_series: dict[str, list[dict]]):
                       {f'{name}:{k}': named_entries[name][k]
                        for name in names for k in keys_specific})
 
-    first_tot_dst_as_src = result[0]['tot_dst_as_src']
-    prev_tot_dst_as_src = 0
+    prev_aggr = None
 
     for aggr in result:
         # We calculate the "aggregate yields" using the following alternative
-        # formulas
+        # (but equivalent) formulas
 
-        aggr['chkpt_yield'] = 0 if prev_tot_dst_as_src == 0 \
-            else aggr['chkpt_gain_src'] / prev_tot_dst_as_src
+        aggr['chkpt_yield'] = 0 if prev_aggr is None \
+            or prev_aggr['tot_dst_as_src'] == 0 \
+            else (aggr['tot_dst_as_src'] - aggr['diff_src']
+                  ) / prev_aggr['tot_dst_as_src'] - 1
 
         aggr['chkpt_apy'] = 0 if aggr['chkpt_yield'] == 0 \
             or aggr['diff_days'] == 0 \
             else (1 + aggr['chkpt_yield']) ** (365 / aggr['diff_days']) - 1
 
-        aggr['global_yield'] = 0 if first_tot_dst_as_src == 0 \
-            else aggr['tot_gain_src'] / first_tot_dst_as_src
+        aggr['global_yield'] = 0 if aggr['tot_src'] == 0 \
+            else aggr['tot_dst_as_src'] / aggr['tot_src'] - 1
 
         aggr['global_apy'] = 0 if aggr['global_yield'] == 0 \
             or aggr['tot_days'] == 0 \
             else (1 + aggr['global_yield']) ** (365 / aggr['tot_days']) - 1
 
-        prev_tot_dst_as_src = aggr['tot_dst_as_src']
+        prev_aggr = aggr
 
         yield aggr
 
