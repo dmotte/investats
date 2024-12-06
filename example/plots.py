@@ -80,7 +80,18 @@ def main(argv=None):
         fig.show()
 
     if args.plot_rate:
-        # TODO
+        fig = px.line(
+            data,
+            x='datetime',
+            y=[k for k in data[0].keys()
+               if k.endswith((':latest_rate', ':avg_rate'))],
+            template='plotly_dark',
+            title='Rate values',
+
+            hover_name='datetime',
+            hover_data=['tot_days'],
+            markers=True,
+        )
         fig.show()
 
     if args.plot_gain:
