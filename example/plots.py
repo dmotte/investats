@@ -83,6 +83,10 @@ def main(argv=None):
         # TODO
         fig.show()
 
+    if args.plot_gain:
+        # TODO
+        fig.show()
+
     if args.plot_apy:
         # TODO
         fig.show()
