@@ -56,12 +56,10 @@ def main(argv=None):
     ############################################################################
 
     if args.file_in == '-':
-        data = load_data(sys.stdin)
+        data = list(load_data(sys.stdin))
     else:
         with open(args.file_in, 'r') as f:
-            data = load_data(f)
-
-    data = list(data)
+            data = list(load_data(f))
 
     if args.plot_tdas:
         # TODO
