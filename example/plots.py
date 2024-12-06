@@ -111,7 +111,19 @@ def main(argv=None):
         fig.show()
 
     if args.plot_apy:
-        # TODO
+        fig = px.line(
+            # The first entry is skipped, as APY is always zero there
+            data[1:],
+            x='datetime',
+            y=[k for k in data[0].keys()
+               if k in ['global_apy'] or k.endswith((':global_apy'))],
+            template='plotly_dark',
+            title='APY values',
+
+            hover_name='datetime',
+            hover_data=['tot_days'],
+            markers=True,
+        )
         fig.show()
 
     return 0
