@@ -3,6 +3,7 @@
 import argparse
 import sys
 
+from contextlib import ExitStack
 from datetime import datetime as dt
 from datetime import date
 from datetime import timedelta
@@ -129,15 +130,12 @@ def main(argv=None):
 
     ############################################################################
 
-    def lambda_write(file: TextIO):
-        return generate_entries(file, args.date_start, args.inv_src,
-                                args.init_rate, args.apy, args.freq,
-                                args.count, args.cgt, args.fmt_rate)
+    with ExitStack() as stack:
+        file_out = (sys.stdout if args.file_out == '-'
+                    else stack.enter_context(open(args.file_out, 'w')))
 
-    if args.file_out == '-':
-        lambda_write(sys.stdout)
-    else:
-        with open(args.file_out, 'w') as f:
-            lambda_write(f)
+        generate_entries(file_out, args.date_start, args.inv_src,
+                         args.init_rate, args.apy, args.freq, args.count,
+                         args.cgt, args.fmt_rate)
 
     return 0
