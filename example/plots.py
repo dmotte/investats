@@ -44,10 +44,12 @@ def main(argv=None):
                         help='Input file. If set to "-" then stdin is used '
                         '(default: -)')
 
-    parser.add_argument('-t', '--plot-tdas', action='store_true',
-                        help='Generate plot based on tot_dst_as_src values')
+    parser.add_argument('-s', '--plot-src', action='store_true',
+                        help='Generate plot based on SRC values')
     parser.add_argument('-r', '--plot-rate', action='store_true',
                         help='Generate plot based on rate values')
+    parser.add_argument('-g', '--plot-gain', action='store_true',
+                        help='Generate plot based on gain values')
     parser.add_argument('-a', '--plot-apy', action='store_true',
                         help='Generate plot based on APY values')
 
@@ -61,8 +63,20 @@ def main(argv=None):
         with open(args.file_in, 'r') as f:
             data = list(load_data(f))
 
-    if args.plot_tdas:
-        # TODO
+    if args.plot_src:
+        fig = px.line(
+            data,
+            x='datetime',
+            y=[k for k in data[0].keys()
+               if k in ['tot_src', 'tot_dst_as_src']
+               or k.endswith((':tot_src', ':tot_dst_as_src'))],
+            template='plotly_dark',
+            title='SRC values',
+
+            hover_name='datetime',
+            hover_data=['tot_days'],
+            markers=True,
+        )
         fig.show()
 
     if args.plot_rate:
