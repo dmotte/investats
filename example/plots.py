@@ -95,7 +95,19 @@ def main(argv=None):
         fig.show()
 
     if args.plot_gain:
-        # TODO
+        fig = px.line(
+            data,
+            x='datetime',
+            y=[k for k in data[0].keys()
+               if k in ['tot_gain_src', 'tot_gain_net_src']
+               or k.endswith((':tot_gain_src', ':tot_gain_net_src'))],
+            template='plotly_dark',
+            title='Gain values',
+
+            hover_name='datetime',
+            hover_data=['tot_days'],
+            markers=True,
+        )
         fig.show()
 
     if args.plot_apy:
