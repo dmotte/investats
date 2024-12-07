@@ -91,7 +91,7 @@ def txns_to_entries(txns: list[dict], asset: str, cgt: float = 0):
     # move the checks on the next entry instead of the previous
 
 
-def write_TODO(data: list[dict], file: TextIO):
+def write_entries(data: list[dict], file: TextIO):
     '''
     TODO
     '''
@@ -136,7 +136,7 @@ def main(argv=None):
         txns = scrape_txns(file_in, '###', 'Datetime:', 'Asset:',
                            'Amount:', 'Shares:', 'Price:')
         entries = txns_to_entries(txns, 'AAA', 0.15)
-        write_TODO(entries, file_out)
+        write_entries(entries, file_out)
 
     return 0
 
