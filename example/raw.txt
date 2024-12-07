@@ -19,14 +19,14 @@ Shares:    22
 Datetime:  2020-10-12T12:30:00Z
 Asset:     BBB
 Price:     20.0000
-Amount:    400
+Amount:    400.00
 
 ########## TRANSACTION ##########
 
 Datetime:  2020-11-12T14:00:00Z
 Asset:     AAA
 Price:     130.0000
-Amount:    2080
+Amount:    2080.00
 
 ########## TRANSACTION ##########
 
