@@ -1,0 +1,36 @@
+This is a sample list of transactions TODO create a unit test out of this data
+
+########## TRANSACTION ##########
+
+Datetime:  2020-09-12T11:30:00Z
+Asset:     BBB
+Price:     25.0000
+Shares:    25
+
+########## TRANSACTION ##########
+
+Datetime:  2020-10-12T12:00:00Z
+Asset:     AAA
+Price:     125.0000
+Shares:    22
+
+########## TRANSACTION ##########
+
+Datetime:  2020-10-12T12:30:00Z
+Asset:     BBB
+Price:     20.0000
+Amount:    400
+
+########## TRANSACTION ##########
+
+Datetime:  2020-11-12T14:00:00Z
+Asset:     AAA
+Price:     130.0000
+Amount:    2080
+
+########## TRANSACTION ##########
+
+Datetime:  2020-11-12T14:30:00Z
+Asset:     BBB
+Price:     25.0000
+Shares:    15
