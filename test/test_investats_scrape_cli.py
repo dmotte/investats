@@ -135,6 +135,8 @@ def test_txns_to_entries():
          'rate': '20.0000', 'inv_src': '400.00'},
         {'datetime': dt(2020, 11, 12, 14, tzinfo=tz.utc), 'asset': 'AAA',
          'rate': '130.0000', 'inv_src': '2080.00'},
+        {'datetime': dt(2020, 11, 12, 14, 15, tzinfo=tz.utc), 'asset': 'AAA',
+         'rate': '135.0000', 'inv_src': '100.00'},
         {'datetime': dt(2020, 11, 12, 14, 30, tzinfo=tz.utc), 'asset': 'BBB',
          'rate': '25.0000', 'inv_dst': '15'},
     ]
@@ -145,6 +147,8 @@ def test_txns_to_entries():
         {'datetime': dt(2020, 10, 13, tzinfo=tz.utc), 'type': 'chkpt'},
         {'datetime': dt(2020, 11, 12, 14, tzinfo=tz.utc), 'type': 'invest',
          'inv_src': '2080.00', 'rate': '130.0000'},
+        {'datetime': dt(2020, 11, 12, 14, 15, tzinfo=tz.utc), 'type': 'invest',
+         'inv_src': '100.00', 'rate': '135.0000'},
         {'datetime': dt(2020, 11, 13, tzinfo=tz.utc), 'type': 'chkpt'},
     ]
 
@@ -161,6 +165,8 @@ def test_txns_to_entries():
          'cgt': '0.15'},
         {'datetime': dt(2020, 11, 12, 14, tzinfo=tz.utc), 'type': 'invest',
          'inv_src': '2080.00', 'rate': '130.0000'},
+        {'datetime': dt(2020, 11, 12, 14, 15, tzinfo=tz.utc), 'type': 'invest',
+         'inv_src': '100.00', 'rate': '135.0000'},
         {'datetime': dt(2020, 11, 13, tzinfo=tz.utc), 'type': 'chkpt'},
     ]
 
