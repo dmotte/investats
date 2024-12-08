@@ -41,12 +41,11 @@ def load_data(file: TextIO, pfix_reset: str, pfix_datetime: str,
         elif line.startswith(pfix_asset):
             txn['asset'] = line.removeprefix(pfix_asset).strip()
         elif line.startswith(pfix_inv_src):
-            # TODO consider leaving them as strings? to preserve the format
-            txn['inv_src'] = float(line.removeprefix(pfix_inv_src))
+            txn['inv_src'] = line.removeprefix(pfix_inv_src).strip()
         elif line.startswith(pfix_inv_dst):
-            txn['inv_dst'] = float(line.removeprefix(pfix_inv_dst))
+            txn['inv_dst'] = line.removeprefix(pfix_inv_dst).strip()
         elif line.startswith(pfix_rate):
-            txn['rate'] = float(line.removeprefix(pfix_rate))
+            txn['rate'] = line.removeprefix(pfix_rate).strip()
 
     if not is_txn_valid(txn):
         raise ValueError('Invalid transaction: ' + str(txn))
