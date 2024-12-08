@@ -2,6 +2,28 @@
 
 import textwrap
 
+from investats_scrape import is_txn_valid
+
+
+def test_is_txn_valid():
+    assert is_txn_valid({'datetime': '', 'asset': '', 'rate': '',
+                         'inv_src': ''})
+    assert is_txn_valid({'datetime': '', 'asset': '', 'rate': '',
+                         'inv_dst': ''})
+    assert is_txn_valid({'datetime': '', 'asset': '', 'rate': '',
+                         'inv_src': '', 'some_other_field': ''})
+    assert is_txn_valid({'datetime': '', 'asset': '', 'rate': '',
+                         'inv_dst': '', 'some_other_field': ''})
+
+    assert not is_txn_valid({})
+
+    assert not is_txn_valid({'datetime': '', 'asset': '', 'rate': ''})
+    assert not is_txn_valid({'datetime': '', 'asset': '', 'rate': '',
+                             'inv_src': '', 'inv_dst': ''})
+
+    assert not is_txn_valid({'datetime': '', 'rate': '', 'inv_src': ''})
+    assert not is_txn_valid({'datetime': '', 'rate': '', 'inv_dst': ''})
+
 
 def test_TODO():
     txt = textwrap.dedent('''\
