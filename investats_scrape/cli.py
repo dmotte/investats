@@ -69,19 +69,23 @@ def txns_to_entries(txns: list[dict], asset: str, cgt: float = 0):
     Filters transactions related to a specific asset, and converts them to
     investats-compatible entries
     '''
+    txns = [txn for txn in txns if txn['asset'] == asset]
+    len_txns = len(txns)
+
     is_first_chkpt = True
-    prev_txn = None
 
-    for txn in txns:
-        if txn['asset'] != asset:
-            continue
+    for i, txn in enumerate(txns):
+        yield {'datetime': txn['datetime'], 'type': 'invest'} | \
+            {k: txn[k] for k in ['inv_src', 'inv_dst', 'rate'] if k in txn}
 
-        if prev_txn is not None \
-                and txn['datetime'].date() != prev_txn['datetime'].date():
+        next_txn = txns[i + 1] if i < len_txns - 1 else None
+
+        if next_txn is None \
+                or txn['datetime'].date() != next_txn['datetime'].date():
             chkpt = {
                 'datetime': dt.combine(
-                    (prev_txn['datetime'] + timedelta(days=1)).date(),
-                    dt.min.time(), prev_txn['datetime'].tzinfo,
+                    (txn['datetime']).date() + timedelta(days=1),
+                    dt.min.time(), txn['datetime'].tzinfo,
                 ),
                 'type': 'chkpt',
             }
@@ -92,14 +96,6 @@ def txns_to_entries(txns: list[dict], asset: str, cgt: float = 0):
                 is_first_chkpt = False
 
             yield chkpt
-
-        yield {'datetime': txn['datetime'], 'type': 'invest'} | \
-            {k: txn[k] for k in ['inv_src', 'inv_dst', 'rate'] if k in txn}
-
-        prev_txn = txn
-
-    # TODO add the last checkpoint! For example, I could use enumerate and
-    # move the checks on the next entry instead of the previous
 
 
 def main(argv=None):
