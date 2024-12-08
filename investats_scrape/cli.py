@@ -64,7 +64,7 @@ def save_data(data: list[dict], file: TextIO):
         ]) + ' }', file=file)
 
 
-def txns_to_entries(txns: list[dict], asset: str, cgt: float = 0):
+def txns_to_entries(txns: list[dict], asset: str, cgt: str = ''):
     '''
     Filters transactions related to a specific asset, and converts them to
     investats-compatible entries
@@ -91,7 +91,7 @@ def txns_to_entries(txns: list[dict], asset: str, cgt: float = 0):
             }
 
             if is_first_chkpt:
-                if cgt != 0:
+                if cgt != '':
                     chkpt['cgt'] = cgt
                 is_first_chkpt = False
 
@@ -106,6 +106,9 @@ def main(argv=None):
         description='Scrape input data for investats from raw text'
     )
 
+    parser.add_argument('asset', metavar='ASSET', type=str,
+                        help='Asset name')
+
     parser.add_argument('file_in', metavar='FILE_IN', type=str,
                         nargs='?', default='-',
                         help='Input file. If set to "-" then stdin is used '
@@ -115,7 +118,27 @@ def main(argv=None):
                         help='Output file. If set to "-" then stdout is used '
                         '(default: -)')
 
-    # TODO flags
+    parser.add_argument('--pfix-reset', type=str, default='#####',
+                        help='Prefix of the lines that separate one '
+                        'transaction from another (default "#####")')
+    parser.add_argument('--pfix-datetime', type=str, default='Datetime:',
+                        help='Prefix of the lines that contain a datetime '
+                        '(default "Datetime:")')
+    parser.add_argument('--pfix-asset', type=str, default='Asset:',
+                        help='Prefix of the lines that contain the name of an '
+                        'asset (default "Asset:")')
+    parser.add_argument('--pfix-inv-src', type=str, default='InvSrc:',
+                        help='Prefix of the lines that contain an inv_src '
+                        'value (default "InvSrc:")')
+    parser.add_argument('--pfix-inv-dst', type=str, default='InvDst:',
+                        help='Prefix of the lines that contain an inv_dst '
+                        'value (default "InvDst:")')
+    parser.add_argument('--pfix-rate', type=str, default='Rate:',
+                        help='Prefix of the lines that contain a rate value '
+                        '(default "Rate:")')
+
+    parser.add_argument('-t', '--cgt', type=str, default='',
+                        help='Capital Gains Tax (default: empty)')
 
     args = parser.parse_args(argv[1:])
 
@@ -127,10 +150,10 @@ def main(argv=None):
         file_out = (sys.stdout if args.file_out == '-'
                     else stack.enter_context(open(args.file_out, 'w')))
 
-        # TODO make the params customizable, with flags, of course
-        txns = load_data(file_in, '###', 'Datetime:', 'Asset:',
-                         'Amount:', 'Shares:', 'Price:')
-        entries = txns_to_entries(txns, 'AAA', 0.15)
+        txns = load_data(file_in, args.pfix_reset, args.pfix_datetime,
+                         args.pfix_asset, args.pfix_inv_src, args.pfix_inv_dst,
+                         args.pfix_rate)
+        entries = txns_to_entries(txns, args.asset, args.cgt)
         save_data(entries, file_out)
 
     return 0
