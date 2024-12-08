@@ -8,7 +8,7 @@ import pytest
 from datetime import datetime as dt
 from datetime import timezone as tz
 
-from investats_scrape import is_txn_valid, load_data
+from investats_scrape import is_txn_valid, load_data, save_data
 
 
 def test_is_txn_valid():
@@ -102,7 +102,27 @@ def test_load_data():
 
 
 def test_save_data():
-    pass  # TODO
+    data = [
+        {'a': 'something', 'b': 123},
+        {'a': 'something else', 'b': 456.789},
+        {'datetime': dt(2020, 1, 1, tzinfo=tz.utc), 'foo': 'bar'},
+        {'datetime': dt(2020, 1, 1, 1, 2, 3, tzinfo=tz.utc), 'x': 'foo',
+         'y': 'baz'},
+    ]
+
+    yml = textwrap.dedent('''\
+        ---
+        - { a: something, b: 123 }
+        - { a: something else, b: 456.789 }
+        - { datetime: 2020-01-01 00:00:00+00:00, foo: bar }
+        - { datetime: 2020-01-01 01:02:03+00:00, x: foo, y: baz }
+    ''')
+
+    buf = io.StringIO()
+    save_data(data, buf)
+    buf.seek(0)
+
+    assert buf.read() == yml
 
 
 def test_txns_to_entries():
