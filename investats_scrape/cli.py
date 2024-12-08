@@ -53,6 +53,18 @@ def load_data(file: TextIO, pfix_reset: str, pfix_datetime: str,
     yield txn
 
 
+def save_data(data: list[dict], file: TextIO):
+    '''
+    Saves data into a YAML file
+    '''
+    print('---', file=file)
+
+    for entry in data:
+        print('- { ' + ', '.join([
+            f'{k}: {str(v)}' for k, v in entry.items()
+        ]) + ' }', file=file)
+
+
 def txns_to_entries(txns: list[dict], asset: str, cgt: float = 0):
     '''
     Filters transactions related to a specific asset, and converts them to
@@ -89,18 +101,6 @@ def txns_to_entries(txns: list[dict], asset: str, cgt: float = 0):
 
     # TODO add the last checkpoint! For example, I could use enumerate and
     # move the checks on the next entry instead of the previous
-
-
-def save_data(data: list[dict], file: TextIO):
-    '''
-    TODO
-    '''
-    print('---', file=file)
-
-    for entry in data:
-        print('- { ' + ', '.join([
-            f'{k}: {str(v)}' for k, v in entry.items()
-        ]) + ' }', file=file)
 
 
 def main(argv=None):
