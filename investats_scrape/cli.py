@@ -47,6 +47,8 @@ def load_data(file: TextIO, pfix_reset: str, pfix_datetime: str,
         elif line.startswith(pfix_rate):
             txn['rate'] = line.removeprefix(pfix_rate).strip()
 
+    if txn == {}:
+        return
     if not is_txn_valid(txn):
         raise ValueError('Invalid transaction: ' + str(txn))
     yield txn

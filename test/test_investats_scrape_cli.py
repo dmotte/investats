@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 
+import io
 import textwrap
 
-from investats_scrape import is_txn_valid
+import pytest
+
+from datetime import datetime as dt
+from datetime import timezone as tz
+
+from investats_scrape import is_txn_valid, load_data
 
 
 def test_is_txn_valid():
@@ -25,7 +31,7 @@ def test_is_txn_valid():
     assert not is_txn_valid({'datetime': '', 'rate': '', 'inv_dst': ''})
 
 
-def test_TODO():
+def test_load_data():
     txt = textwrap.dedent('''\
         This is a sample list of transactions
 
@@ -65,4 +71,39 @@ def test_TODO():
         Shares:    15
     ''')
 
+    data_out_expected = [
+        {'datetime': dt(2020, 9, 12, 11, 30, tzinfo=tz.utc), 'asset': 'BBB',
+         'rate': '25.0000', 'inv_dst': '25'},
+        {'datetime': dt(2020, 10, 12, 12, tzinfo=tz.utc), 'asset': 'AAA',
+         'rate': '125.0000', 'inv_dst': '22'},
+        {'datetime': dt(2020, 10, 12, 12, 30, tzinfo=tz.utc), 'asset': 'BBB',
+         'rate': '20.0000', 'inv_src': '400.00'},
+        {'datetime': dt(2020, 11, 12, 14, tzinfo=tz.utc), 'asset': 'AAA',
+         'rate': '130.0000', 'inv_src': '2080.00'},
+        {'datetime': dt(2020, 11, 12, 14, 30, tzinfo=tz.utc), 'asset': 'BBB',
+         'rate': '25.0000', 'inv_dst': '15'},
+    ]
+
+    data = list(load_data(io.StringIO(txt), '#####', 'Datetime:', 'Asset:',
+                          'Amount:', 'Shares:', 'Price:'))
+    assert data == data_out_expected
+
+    txt += textwrap.dedent('''\
+        ########## TRANSACTION ##########
+    ''')
+
+    data = list(load_data(io.StringIO(txt), '#####', 'Datetime:', 'Asset:',
+                          'Amount:', 'Shares:', 'Price:'))
+    assert data == data_out_expected
+
+    with pytest.raises(ValueError, match=r'Invalid transaction: {.+}'):
+        list(load_data(io.StringIO(txt), '#####', 'Datetime:', 'Asset:',
+                       'Amount:', 'Shares:', 'ThisIsAWrongPrefix:'))
+
+
+def test_save_data():
+    pass  # TODO
+
+
+def test_txns_to_entries():
     pass  # TODO
