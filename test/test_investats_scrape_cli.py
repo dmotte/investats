@@ -8,7 +8,7 @@ import pytest
 from datetime import datetime as dt
 from datetime import timezone as tz
 
-from investats_scrape import is_txn_valid, load_data, save_data
+from investats_scrape import is_txn_valid, load_data, save_data, txns_to_entries
 
 
 def test_is_txn_valid():
@@ -126,4 +126,64 @@ def test_save_data():
 
 
 def test_txns_to_entries():
-    pass  # TODO
+    data_in_orig = [
+        {'datetime': dt(2020, 9, 12, 11, 30, tzinfo=tz.utc), 'asset': 'BBB',
+         'rate': '25.0000', 'inv_dst': '25'},
+        {'datetime': dt(2020, 10, 12, 12, tzinfo=tz.utc), 'asset': 'AAA',
+         'rate': '125.0000', 'inv_dst': '22'},
+        {'datetime': dt(2020, 10, 12, 12, 30, tzinfo=tz.utc), 'asset': 'BBB',
+         'rate': '20.0000', 'inv_src': '400.00'},
+        {'datetime': dt(2020, 11, 12, 14, tzinfo=tz.utc), 'asset': 'AAA',
+         'rate': '130.0000', 'inv_src': '2080.00'},
+        {'datetime': dt(2020, 11, 12, 14, 30, tzinfo=tz.utc), 'asset': 'BBB',
+         'rate': '25.0000', 'inv_dst': '15'},
+    ]
+
+    data_out_expected = [
+        {'datetime': dt(2020, 10, 12, 12, tzinfo=tz.utc), 'type': 'invest',
+         'inv_dst': '22', 'rate': '125.0000'},
+        {'datetime': dt(2020, 10, 13, tzinfo=tz.utc), 'type': 'chkpt'},
+        {'datetime': dt(2020, 11, 12, 14, tzinfo=tz.utc), 'type': 'invest',
+         'inv_src': '2080.00', 'rate': '130.0000'},
+        {'datetime': dt(2020, 11, 13, tzinfo=tz.utc), 'type': 'chkpt'},
+    ]
+
+    data_in = [x.copy() for x in data_in_orig]
+    data_in_copy = [x.copy() for x in data_in]
+    data_out = list(txns_to_entries(data_in, 'AAA'))
+    assert data_in == data_in_copy
+    assert data_out == data_out_expected
+
+    data_out_expected = [
+        {'datetime': dt(2020, 10, 12, 12, tzinfo=tz.utc), 'type': 'invest',
+         'inv_dst': '22', 'rate': '125.0000'},
+        {'datetime': dt(2020, 10, 13, tzinfo=tz.utc), 'type': 'chkpt',
+         'cgt': '0.15'},
+        {'datetime': dt(2020, 11, 12, 14, tzinfo=tz.utc), 'type': 'invest',
+         'inv_src': '2080.00', 'rate': '130.0000'},
+        {'datetime': dt(2020, 11, 13, tzinfo=tz.utc), 'type': 'chkpt'},
+    ]
+
+    data_in = [x.copy() for x in data_in_orig]
+    data_in_copy = [x.copy() for x in data_in]
+    data_out = list(txns_to_entries(data_in, 'AAA', '0.15'))
+    assert data_in == data_in_copy
+    assert data_out == data_out_expected
+
+    data_out_expected = [
+        {'datetime': dt(2020, 9, 12, 11, 30, tzinfo=tz.utc), 'type': 'invest',
+         'inv_dst': '25', 'rate': '25.0000'},
+        {'datetime': dt(2020, 9, 13, tzinfo=tz.utc), 'type': 'chkpt'},
+        {'datetime': dt(2020, 10, 12, 12, 30, tzinfo=tz.utc), 'type': 'invest',
+         'inv_src': '400.00', 'rate': '20.0000'},
+        {'datetime': dt(2020, 10, 13, tzinfo=tz.utc), 'type': 'chkpt'},
+        {'datetime': dt(2020, 11, 12, 14, 30, tzinfo=tz.utc), 'type': 'invest',
+         'inv_dst': '15', 'rate': '25.0000'},
+        {'datetime': dt(2020, 11, 13, tzinfo=tz.utc), 'type': 'chkpt'},
+    ]
+
+    data_in = [x.copy() for x in data_in_orig]
+    data_in_copy = [x.copy() for x in data_in]
+    data_out = list(txns_to_entries(data_in, 'BBB'))
+    assert data_in == data_in_copy
+    assert data_out == data_out_expected
