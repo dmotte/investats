@@ -30,16 +30,18 @@ venv/bin/python3 -mpip install -r requirements.txt
 
 > **Note**: we refer to the **source asset** of the investment with the **generic ticker symbol** `SRC`, and to the **destination asset** with `DST`.
 
-Now we need some **input data** about some investments. You can generate dummy data using the `investats_gen` CLI entrypoint. Example commands:
+Now we need some **input data** about some investments. You can **generate** dummy data using the `investats_gen` CLI entrypoint. Example commands:
 
 ```bash
 python3 -minvestats_gen -d2021-01-01 -a.2 -c24 --fmt-rate='{:.4f}' data-AAA.yml
 python3 -minvestats_gen -d2021-01-01 -a.3 -c24 --fmt-rate='{:.4f}' data-BBB.yml
 ```
 
-TODO another alternative is to scrape data from raw text using `investats_scrape`
+Or you can **scrape** data from raw text files using the `investats_scrape` CLI entrypoint:
 
-> **Note**: each **input and output entry field** is described with a comment in the `compute_stats` function code. You can search for the string `# - entry_` in the [`investats/cli.py`](investats/cli.py) file to get an overview.
+```bash
+python3 -minvestats_scrape AAA transactions.txt --pfix-{inv-src=Amount,inv-dst=Shares,rate=Price}: -t0.15
+```
 
 Now that we have the data, we can **compute the statistics** about the investments:
 
@@ -49,6 +51,8 @@ for i in AAA BBB; do
         --fmt-rate='{:.6f}' "data-$i.yml" "stats-$i.csv"
 done
 ```
+
+> **Note**: each supported **input and output entry field** is described with a comment in the `compute_stats` function code. You can search for the string `# - entry_` in the [`investats/cli.py`](investats/cli.py) file to get an overview.
 
 Then, we can **aggregate** the resulting data (related to multiple investments) into a single CSV file:
 
