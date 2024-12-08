@@ -18,9 +18,9 @@ def is_txn_valid(txn: dict) -> bool:
         and ('inv_src' in txn) != ('inv_dst' in txn)
 
 
-def scrape_txns(file: TextIO, pfix_reset: str, pfix_datetime: str,
-                pfix_asset: str, pfix_inv_src: str, pfix_inv_dst: str,
-                pfix_rate: str):
+def load_data(file: TextIO, pfix_reset: str, pfix_datetime: str,
+              pfix_asset: str, pfix_inv_src: str, pfix_inv_dst: str,
+              pfix_rate: str):
     '''
     Scrapes transactions from a raw text file
     '''
@@ -91,7 +91,7 @@ def txns_to_entries(txns: list[dict], asset: str, cgt: float = 0):
     # move the checks on the next entry instead of the previous
 
 
-def write_entries(data: list[dict], file: TextIO):
+def save_data(data: list[dict], file: TextIO):
     '''
     TODO
     '''
@@ -133,11 +133,9 @@ def main(argv=None):
                     else stack.enter_context(open(args.file_out, 'w')))
 
         # TODO make the params customizable, with flags, of course
-        # TODO consider renaming the functions to load_data and save_data as
-        # usual
-        txns = scrape_txns(file_in, '###', 'Datetime:', 'Asset:',
-                           'Amount:', 'Shares:', 'Price:')
+        txns = load_data(file_in, '###', 'Datetime:', 'Asset:',
+                         'Amount:', 'Shares:', 'Price:')
         entries = txns_to_entries(txns, 'AAA', 0.15)
-        write_entries(entries, file_out)
+        save_data(entries, file_out)
 
     return 0
