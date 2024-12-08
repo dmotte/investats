@@ -120,7 +120,7 @@ def main(argv=None):
             data[1:],
             x='datetime',
             y=[k for k in data[0].keys()
-               if k in ['global_apy'] or k.endswith((':global_apy'))],
+               if k == 'global_apy' or k.endswith(':global_apy')],
             template='plotly_dark',
             title='APY values',
 
