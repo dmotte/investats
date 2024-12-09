@@ -36,7 +36,7 @@ def main(argv=None):
         argv = sys.argv
 
     parser = argparse.ArgumentParser(
-        description='Generate plots based on data computed with investats and '
+        description='Generate plots based on data computed with investats, or '
         'aggregated with investats_aggr'
     )
 
@@ -84,7 +84,8 @@ def main(argv=None):
             data,
             x='datetime',
             y=[k for k in data[0].keys()
-               if k.endswith((':latest_rate', ':avg_rate'))],
+               if k in ['latest_rate', 'avg_rate']
+               or k.endswith((':latest_rate', ':avg_rate'))],
             template='plotly_dark',
             title='Rate values',
 
@@ -93,9 +94,9 @@ def main(argv=None):
             markers=True,
         )
         for k in data[0].keys():
-            if not k.endswith(':avg_rate'):
-                continue
-            fig.add_hline(annotation_text=k, y=data[-1][k], line_color='#0c0')
+            if k == 'avg_rate' or k.endswith(':avg_rate'):
+                fig.add_hline(annotation_text=k, y=data[-1][k],
+                              line_color='#0c0')
         fig.show()
 
     if args.plot_gain:
