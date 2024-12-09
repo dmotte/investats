@@ -33,8 +33,8 @@ venv/bin/python3 -mpip install -r requirements.txt
 Now we need some **input data** about some investments. You can **generate** dummy data using the `investats_gen` CLI entrypoint. Example commands:
 
 ```bash
-python3 -minvestats_gen -d2021-01-01 -a.2 -c24 --fmt-rate='{:.4f}' data-AAA.yml
-python3 -minvestats_gen -d2021-01-01 -a.3 -c24 --fmt-rate='{:.4f}' data-BBB.yml
+python3 -minvestats_gen -d2021-01-01 -a.20 -c24 --fmt-rate='{:.4f}' data-AAA.yml
+python3 -minvestats_gen -d2021-01-01 -a.30 -c24 --fmt-rate='{:.4f}' data-BBB.yml
 ```
 
 Or you can **scrape** data from raw text files using the `investats_scrape` CLI entrypoint:
