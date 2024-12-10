@@ -59,7 +59,7 @@ def load_data(file: TextIO) -> list[dict]:
     for i in range(1, len(data)):
         prev, curr = data[i - 1], data[i]
 
-        if prev['type'] == 'invest' and curr['type'] == 'chkpt':
+        if prev['type'] == 'invest':
             if prev['datetime'] > curr['datetime']:
                 raise ValueError('Invalid entry order: ' +
                                  str(prev['datetime']) + ' > ' +
