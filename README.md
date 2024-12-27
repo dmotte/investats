@@ -52,7 +52,7 @@ for i in AAA BBB; do
 done
 ```
 
-> **Note**: each supported **input and output entry field** is described with a comment in the `compute_stats` function code. You can search for the string `# - entry_` in the [`investats/cli.py`](investats/cli.py) file to get an overview.
+> **Note**: each supported **input and output entry field** is described with a comment in the `compute_stats` function's code. You can search for the string `# - entry_` in the [`investats/cli.py`](investats/cli.py) file to get an overview.
 
 Then, we can **aggregate** the resulting data (related to multiple investments) into a single CSV file:
 
