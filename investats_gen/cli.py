@@ -7,11 +7,11 @@ from contextlib import ExitStack
 from datetime import datetime as dt
 from datetime import date
 from datetime import timedelta
-from enum import Enum
+from enum import StrEnum
 from typing import TextIO
 
 
-class Freq(str, Enum):
+class Freq(StrEnum):
     '''
     Represents how often an investment is made
     '''
