@@ -278,11 +278,11 @@ def main(argv=None):
     parser.add_argument('file_in', metavar='FILE_IN', type=str,
                         nargs='?', default='-',
                         help='Input file. If set to "-" then stdin is used '
-                        '(default: -)')
+                        '(default: %(default)s)')
     parser.add_argument('file_out', metavar='FILE_OUT', type=str,
                         nargs='?', default='-',
                         help='Output file. If set to "-" then stdout is used '
-                        '(default: -)')
+                        '(default: %(default)s)')
 
     parser.add_argument('--fmt-days', type=str, default='',
                         help='If specified, formats the days values with this '

@@ -96,7 +96,7 @@ def main(argv=None):
     parser.add_argument('file_out', metavar='FILE_OUT', type=str,
                         nargs='?', default='-',
                         help='Output file. If set to "-" then stdout is used '
-                        '(default: -)')
+                        '(default: %(default)s)')
 
     parser.add_argument('-d', '--date-start',
                         type=lambda x: dt.strptime(x, '%Y-%m-%d').date(),
@@ -105,19 +105,20 @@ def main(argv=None):
                         '(default: 365 days ago)')
     parser.add_argument('-s', '--inv-src', type=str, default='1000',
                         help='How much SRC to invest each time '
-                        '(default: 1000)')
+                        '(default: %(default)s)')
     parser.add_argument('-r', '--init-rate', type=float, default=100,
-                        help='Initial DST/SRC rate value (default: 100)')
+                        help='Initial DST/SRC rate value (default: '
+                        '%(default)s)')
 
     parser.add_argument('-a', '--apy', type=float, default=0,
                         help='APY (over 365 days) of the DST/SRC rate '
-                        '(default: 0)')
+                        '(default: %(default)s)')
     parser.add_argument('-f', '--freq', type=lambda x: Freq(x),
                         default=Freq.MONTHLY,
                         help='How often the investment is made '
-                        '(default: monthly)')
+                        '(default: %(default)s)')
     parser.add_argument('-c', '--count', type=int, default=12,
-                        help='Number of periods (default: 12)')
+                        help='Number of periods (default: %(default)s)')
 
     parser.add_argument('-t', '--cgt', type=str, default='',
                         help='Capital Gains Tax (default: empty)')

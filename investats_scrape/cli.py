@@ -114,30 +114,30 @@ def main(argv=None):
     parser.add_argument('file_in', metavar='FILE_IN', type=str,
                         nargs='?', default='-',
                         help='Input file. If set to "-" then stdin is used '
-                        '(default: -)')
+                        '(default: %(default)s)')
     parser.add_argument('file_out', metavar='FILE_OUT', type=str,
                         nargs='?', default='-',
                         help='Output file. If set to "-" then stdout is used '
-                        '(default: -)')
+                        '(default: %(default)s)')
 
     parser.add_argument('--pfix-reset', type=str, default='#####',
                         help='Prefix of the lines that separate one '
-                        'transaction from another (default "#####")')
+                        'transaction from another (default: "%(default)s")')
     parser.add_argument('--pfix-datetime', type=str, default='Datetime:',
                         help='Prefix of the lines that contain a datetime '
-                        '(default "Datetime:")')
+                        '(default: "%(default)s")')
     parser.add_argument('--pfix-asset', type=str, default='Asset:',
                         help='Prefix of the lines that contain the name of an '
-                        'asset (default "Asset:")')
+                        'asset (default: "%(default)s")')
     parser.add_argument('--pfix-inv-src', type=str, default='InvSrc:',
                         help='Prefix of the lines that contain an inv_src '
-                        'value (default "InvSrc:")')
+                        'value (default: "%(default)s")')
     parser.add_argument('--pfix-inv-dst', type=str, default='InvDst:',
                         help='Prefix of the lines that contain an inv_dst '
-                        'value (default "InvDst:")')
+                        'value (default: "%(default)s")')
     parser.add_argument('--pfix-rate', type=str, default='Rate:',
                         help='Prefix of the lines that contain a rate value '
-                        '(default "Rate:")')
+                        '(default: "%(default)s")')
 
     parser.add_argument('-t', '--cgt', type=str, default='',
                         help='Capital Gains Tax (default: empty)')

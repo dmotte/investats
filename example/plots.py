@@ -43,7 +43,7 @@ def main(argv=None):
     parser.add_argument('file_in', metavar='FILE_IN', type=str,
                         nargs='?', default='-',
                         help='Input file. If set to "-" then stdin is used '
-                        '(default: -)')
+                        '(default: %(default)s)')
 
     parser.add_argument('-s', '--plot-src', action='store_true',
                         help='Generate plot based on SRC values')
