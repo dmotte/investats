@@ -61,9 +61,9 @@ def save_data(data: list[dict], file: TextIO):
     print('---', file=file)
 
     for entry in data:
-        print('- { ' + ', '.join([
+        print('- { ' + ', '.join(
             f'{k}: {str(v)}' for k, v in entry.items()
-        ]) + ' }', file=file)
+        ) + ' }', file=file)
 
 
 def txns_to_entries(txns: list[dict], asset: str, cgt: str = ''):
