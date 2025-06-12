@@ -14,7 +14,7 @@ def is_txn_valid(txn: dict) -> bool:
     '''
     Checks whether a transaction is valid or not
     '''
-    return all(k in txn for k in ['datetime', 'asset', 'rate']) \
+    return all(k in txn for k in ('datetime', 'asset', 'rate')) \
         and ('inv_src' in txn) != ('inv_dst' in txn)
 
 
@@ -78,7 +78,7 @@ def txns_to_entries(txns: list[dict], asset: str, cgt: str = ''):
 
     for i, txn in enumerate(txns):
         yield {'datetime': txn['datetime'], 'type': 'invest'} | \
-            {k: txn[k] for k in ['inv_src', 'inv_dst', 'rate'] if k in txn}
+            {k: txn[k] for k in ('inv_src', 'inv_dst', 'rate') if k in txn}
 
         next_txn = txns[i + 1] if i < len_txns - 1 else None
 

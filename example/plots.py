@@ -68,7 +68,7 @@ def main(argv=None):
             data,
             x='datetime',
             y=[k for k in data[0].keys()
-               if k in ['tot_src', 'tot_dst_as_src']
+               if k in ('tot_src', 'tot_dst_as_src')
                or k.endswith((':tot_src', ':tot_dst_as_src'))],
             template='plotly_dark',
             title='SRC values',
@@ -84,7 +84,7 @@ def main(argv=None):
             data,
             x='datetime',
             y=[k for k in data[0].keys()
-               if k in ['latest_rate', 'avg_rate']
+               if k in ('latest_rate', 'avg_rate')
                or k.endswith((':latest_rate', ':avg_rate'))],
             template='plotly_dark',
             title='Rate values',
@@ -104,7 +104,7 @@ def main(argv=None):
             data,
             x='datetime',
             y=[k for k in data[0].keys()
-               if k in ['tot_gain_src', 'tot_gain_net_src']
+               if k in ('tot_gain_src', 'tot_gain_net_src')
                or k.endswith((':tot_gain_src', ':tot_gain_net_src'))],
             template='plotly_dark',
             title='Gain values',

@@ -55,12 +55,12 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
         if key == 'datetime' or key.endswith(':latest_cgt'):
             return str
 
-        if key in ['diff_days', 'tot_days']:
+        if key in ('diff_days', 'tot_days'):
             return func_days
 
-        if key in ['diff_src', 'tot_src', 'tot_dst_as_src',
+        if key in ('diff_src', 'tot_src', 'tot_dst_as_src',
                    'chkpt_gain_src', 'chkpt_gain_net_src',
-                   'tot_gain_src', 'tot_gain_net_src'] \
+                   'tot_gain_src', 'tot_gain_net_src') \
             or key.endswith((':diff_src', ':tot_src', ':tot_dst_as_src',
                              ':chkpt_gain_src', ':chkpt_gain_net_src',
                              ':tot_gain_src', ':tot_gain_net_src')):
@@ -72,8 +72,8 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
         if key.endswith((':latest_rate', ':avg_rate')):
             return func_rate
 
-        if key in ['chkpt_yield', 'chkpt_apy',
-                   'global_yield', 'global_apy'] \
+        if key in ('chkpt_yield', 'chkpt_apy',
+                   'global_yield', 'global_apy') \
             or key.endswith((':chkpt_yield', ':chkpt_apy',
                             ':global_yield', ':global_apy')):
             return func_yield
@@ -112,10 +112,10 @@ def aggregate_series(named_series: dict[str, list[dict]]):
                 raise ValueError('Mismatching checkpoint datetime: '
                                  f'{d_s} != {d}')
 
-    KEYS_COMMON = ['datetime', 'diff_days', 'tot_days']
-    KEYS_SUM = ['diff_src', 'tot_src', 'tot_dst_as_src',
+    KEYS_COMMON = ('datetime', 'diff_days', 'tot_days')
+    KEYS_SUM = ('diff_src', 'tot_src', 'tot_dst_as_src',
                 'chkpt_gain_src', 'chkpt_gain_net_src',
-                'tot_gain_src', 'tot_gain_net_src']
+                'tot_gain_src', 'tot_gain_net_src')
 
     keys_specific = [k for k in series[0][0].keys() if k not in KEYS_COMMON]
 

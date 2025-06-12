@@ -33,7 +33,7 @@ def load_data(file: TextIO) -> list[dict]:
     # https://symfony.com/doc/current/components/yaml/yaml_format.html#dates
 
     for entry in data:
-        if not entry['type'] in ['invest', 'chkpt']:
+        if not entry['type'] in ('invest', 'chkpt'):
             raise ValueError('Invalid entry type: ' + str(entry['type']))
 
         if not isinstance(entry['datetime'], dt):

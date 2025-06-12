@@ -91,8 +91,8 @@ def test_generate_entries():
         - { datetime: 2022-01-01, type: chkpt }
     ''')
 
-    for cgt in ['', '0', '000', '0.0', '0.00', '0.0000', '0000.0000', '-0',
-                '-0.0', '-00.00']:
+    for cgt in ('', '0', '000', '0.0', '0.00', '0.0000', '0000.0000', '-0',
+                '-0.0', '-00.00'):
         buf = io.StringIO()
         generate_entries(buf, date(2021, 1, 1), '500', 100, 0.08,
                          Freq.YEARLY, 2, cgt)
