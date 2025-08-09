@@ -3,15 +3,16 @@
 import argparse
 import sys
 
+from collections.abc import Iterator
 from contextlib import ExitStack
-from datetime import datetime as dt
 from datetime import date
-from typing import TextIO
+from datetime import datetime as dt
+from typing import Any, TextIO
 
 import yaml
 
 
-def is_aware(d: dt):
+def is_aware(d: dt) -> bool:
     '''
     Returns true if the datetime object `d` is timezone-aware, false otherwise.
     See https://docs.python.org/3/library/datetime.html#determining-if-an-object-is-aware-or-naive
@@ -75,7 +76,7 @@ def load_data(file: TextIO) -> list[dict]:
 
 def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
               fmt_src: str = '', fmt_dst: str = '', fmt_rate: str = '',
-              fmt_yield: str = ''):
+              fmt_yield: str = '') -> None:
     '''
     Saves data into a CSV file
     '''
@@ -138,7 +139,7 @@ def complete_invest_entry(entry_in: dict) -> dict:
     return entry_out
 
 
-def compute_stats(data: list[dict]):
+def compute_stats(data: list[dict]) -> Iterator[dict[str, Any]]:
     '''
     Computes the statistics
     '''
@@ -267,7 +268,7 @@ def compute_stats(data: list[dict]):
             raise ValueError('Invalid entry type: ' + str(entry_in['type']))
 
 
-def main(argv=None):
+def main(argv: list[str] = None) -> int:
     if argv is None:
         argv = sys.argv
 

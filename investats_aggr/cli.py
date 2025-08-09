@@ -4,8 +4,9 @@ import argparse
 import csv
 import sys
 
+from collections.abc import Callable, Iterator
 from dateutil import parser as dup
-from typing import TextIO
+from typing import Any, TextIO
 
 
 def pair_items_to_dict(items: list[str]) -> dict[str, str]:
@@ -23,7 +24,7 @@ def pair_items_to_dict(items: list[str]) -> dict[str, str]:
     return {items[i]: items[i + 1] for i in range(0, len_items, 2)}
 
 
-def load_data(file: TextIO):
+def load_data(file: TextIO) -> Iterator[dict[str, Any]]:
     '''
     Loads data from a CSV file
     '''
@@ -38,7 +39,7 @@ def load_data(file: TextIO):
 
 def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
               fmt_src: str = '', fmt_dst: str = '', fmt_rate: str = '',
-              fmt_yield: str = ''):
+              fmt_yield: str = '') -> None:
     '''
     Saves data into a CSV file
     '''
@@ -48,7 +49,7 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
     func_rate = str if fmt_rate == '' else lambda x: fmt_rate.format(x)
     func_yield = str if fmt_yield == '' else lambda x: fmt_yield.format(x)
 
-    def get_fmt(key: str):
+    def get_fmt(key: str) -> Callable[[Any], str]:
         '''
         Determines the format function for a specific field key
         '''
@@ -87,7 +88,8 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
         print(','.join(f(x[k]) for k, f in fields.items()), file=file)
 
 
-def aggregate_series(named_series: dict[str, list[dict]]):
+def aggregate_series(
+        named_series: dict[str, list[dict]]) -> Iterator[dict[str, Any]]:
     '''
     Aggregates multiple investats data series into a single one
     '''
@@ -156,7 +158,7 @@ def aggregate_series(named_series: dict[str, list[dict]]):
         yield aggr
 
 
-def main(argv=None):
+def main(argv: list[str] = None) -> int:
     if argv is None:
         argv = sys.argv
 

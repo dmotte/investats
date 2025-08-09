@@ -10,7 +10,7 @@ from datetime import date
 from investats_gen import Freq, generate_entries
 
 
-def test_freq():
+def test_freq() -> None:
     assert Freq('weekly') == Freq.WEEKLY
 
     with pytest.raises(ValueError) as exc_info:
@@ -42,7 +42,7 @@ def test_freq():
     assert Freq.YEARLY.next(d) == date(2021, 12, 7)
 
 
-def test_generate_entries():
+def test_generate_entries() -> None:
     with pytest.raises(ValueError) as exc_info:
         generate_entries(io.StringIO(), date(2020, 1, 1), '500', 100, 0.08,
                          Freq.MONTHLY, 1, '0.15', '{:.4f}')

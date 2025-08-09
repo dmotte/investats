@@ -11,7 +11,7 @@ from datetime import timezone as tz
 from investats import load_data, save_data, complete_invest_entry, compute_stats
 
 
-def test_load_data():
+def test_load_data() -> None:
     yml = textwrap.dedent('''\
         ---
         - { datetime: 2020-01-12, type: invest, inv_src: &inv 500, rate: 100.0000 }
@@ -122,7 +122,7 @@ def test_load_data():
         '2020-01-12 00:00:00+00:00',)
 
 
-def test_save_data():
+def test_save_data() -> None:
     data = [
         {'datetime': dt(2020, 1, 1, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
@@ -214,7 +214,7 @@ def test_save_data():
     assert buf.read() == csv
 
 
-def test_complete_invest_entry():
+def test_complete_invest_entry() -> None:
     assert complete_invest_entry({'inv_dst': 100, 'rate': 3}) == \
         {'inv_src': 300, 'inv_dst': 100, 'rate': 3}
     assert complete_invest_entry({'inv_src': 100, 'rate': 8}) == \
@@ -250,7 +250,7 @@ def test_complete_invest_entry():
     assert exc_info.value.args == ('inv_dst',)
 
 
-def test_compute_stats():
+def test_compute_stats() -> None:
     data_in_orig = [
         {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'invest',
          'inv_src': 500, 'rate': 100},

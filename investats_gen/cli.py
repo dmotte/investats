@@ -53,7 +53,7 @@ class Freq(StrEnum):
 
 def generate_entries(file: TextIO, date_start: date, inv_src: str,
                      init_rate: float, apy: float, freq: Freq, count: int,
-                     cgt: str = '', fmt_rate: str = ''):
+                     cgt: str = '', fmt_rate: str = '') -> None:
     '''
     Generates entries based on some parameters
     '''
@@ -85,7 +85,7 @@ def generate_entries(file: TextIO, date_start: date, inv_src: str,
               file=file)
 
 
-def main(argv=None):
+def main(argv: list[str] = None) -> int:
     if argv is None:
         argv = sys.argv
 

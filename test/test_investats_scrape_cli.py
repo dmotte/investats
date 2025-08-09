@@ -11,7 +11,7 @@ from datetime import timezone as tz
 from investats_scrape import is_txn_valid, load_data, save_data, txns_to_entries
 
 
-def test_is_txn_valid():
+def test_is_txn_valid() -> None:
     assert is_txn_valid({'datetime': '', 'asset': '', 'rate': '',
                          'inv_src': ''})
     assert is_txn_valid({'datetime': '', 'asset': '', 'rate': '',
@@ -31,7 +31,7 @@ def test_is_txn_valid():
     assert not is_txn_valid({'datetime': '', 'rate': '', 'inv_dst': ''})
 
 
-def test_load_data():
+def test_load_data() -> None:
     txt = textwrap.dedent('''\
         This is a sample list of transactions
 
@@ -101,7 +101,7 @@ def test_load_data():
                        'Amount:', 'Shares:', 'ThisIsAWrongPrefix:'))
 
 
-def test_save_data():
+def test_save_data() -> None:
     data = [
         {'a': 'something', 'b': 123},
         {'a': 'something else', 'b': 456.789},
@@ -125,7 +125,7 @@ def test_save_data():
     assert buf.read() == yml
 
 
-def test_txns_to_entries():
+def test_txns_to_entries() -> None:
     data_in_orig = [
         {'datetime': dt(2020, 9, 12, 11, 30, tzinfo=tz.utc), 'asset': 'BBB',
          'rate': '25.0000', 'inv_dst': '25'},

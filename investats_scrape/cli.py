@@ -3,11 +3,12 @@
 import argparse
 import sys
 
+from collections.abc import Iterator
 from contextlib import ExitStack
 from datetime import datetime as dt
 from datetime import timedelta
 from dateutil import parser as dup
-from typing import TextIO
+from typing import Any, TextIO
 
 
 def is_txn_valid(txn: dict) -> bool:
@@ -20,7 +21,7 @@ def is_txn_valid(txn: dict) -> bool:
 
 def load_data(file: TextIO, pfix_reset: str, pfix_datetime: str,
               pfix_asset: str, pfix_inv_src: str, pfix_inv_dst: str,
-              pfix_rate: str):
+              pfix_rate: str) -> Iterator[dict[str, Any]]:
     '''
     Scrapes transactions from a raw text file
     '''
@@ -54,7 +55,7 @@ def load_data(file: TextIO, pfix_reset: str, pfix_datetime: str,
     yield txn
 
 
-def save_data(data: list[dict], file: TextIO):
+def save_data(data: list[dict], file: TextIO) -> None:
     '''
     Saves data into a YAML file
     '''
@@ -66,7 +67,8 @@ def save_data(data: list[dict], file: TextIO):
         ) + ' }', file=file)
 
 
-def txns_to_entries(txns: list[dict], asset: str, cgt: str = ''):
+def txns_to_entries(txns: list[dict], asset: str,
+                    cgt: str = '') -> Iterator[dict[str, Any]]:
     '''
     Filters transactions related to a specific asset, and converts them to
     investats-compatible entries
@@ -100,7 +102,7 @@ def txns_to_entries(txns: list[dict], asset: str, cgt: str = ''):
             yield chkpt
 
 
-def main(argv=None):
+def main(argv: list[str] = None) -> int:
     if argv is None:
         argv = sys.argv
 

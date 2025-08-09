@@ -13,7 +13,7 @@ from investats_aggr import pair_items_to_dict, load_data, save_data, \
     aggregate_series
 
 
-def test_pair_items_to_dict():
+def test_pair_items_to_dict() -> None:
     assert pair_items_to_dict(['A', 'aaa', 'B', 'bbb']) == \
         {'A': 'aaa', 'B': 'bbb'}
     assert pair_items_to_dict(['A', 'aaa', 'B', 'bbb', 'C', 'ccc']) == \
@@ -29,7 +29,7 @@ def test_pair_items_to_dict():
     assert exc_info.value.args == ('The number of pairs must be >= 2',)
 
 
-def test_load_data():
+def test_load_data() -> None:
     csv = textwrap.dedent('''\
         datetime,field01,field02,field03
         2020-01-01 00:00:00+00:00,0,0,0
@@ -52,7 +52,7 @@ def test_load_data():
     ]
 
 
-def test_save_data():
+def test_save_data() -> None:
     data = [
         {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
@@ -225,7 +225,7 @@ def test_save_data():
     assert exc_info.value.args == ('Unsupported key: asdfghjkl',)
 
 
-def test_aggregate_series():
+def test_aggregate_series() -> None:
     data_aaa = [
         {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
