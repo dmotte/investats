@@ -102,7 +102,7 @@ def txns_to_entries(txns: list[dict], asset: str,
             yield chkpt
 
 
-def main(argv: list[str] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv
 

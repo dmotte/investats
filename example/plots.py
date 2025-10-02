@@ -32,7 +32,7 @@ def load_data(file: TextIO) -> Iterator[dict[str, Any]]:
         yield x
 
 
-def main(argv: list[str] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv
 

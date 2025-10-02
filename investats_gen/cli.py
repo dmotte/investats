@@ -85,7 +85,7 @@ def generate_entries(file: TextIO, date_start: date, inv_src: str,
               file=file)
 
 
-def main(argv: list[str] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv
 

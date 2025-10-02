@@ -268,7 +268,7 @@ def compute_stats(data: list[dict]) -> Iterator[dict[str, Any]]:
             raise ValueError('Invalid entry type: ' + str(entry_in['type']))
 
 
-def main(argv: list[str] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv
 

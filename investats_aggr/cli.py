@@ -158,7 +158,7 @@ def aggregate_series(
         yield aggr
 
 
-def main(argv: list[str] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv
 
