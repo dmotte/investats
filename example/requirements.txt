@@ -1,2 +1,2 @@
 pandas==2.3.*
-plotly[express]==6.3.*
+plotly[express]==6.5.*
