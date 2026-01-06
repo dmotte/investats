@@ -72,7 +72,7 @@ def main(argv: list[str] | None = None) -> int:
                if k in ('tot_src', 'tot_dst_as_src')
                or k.endswith((':tot_src', ':tot_dst_as_src'))],
             template='plotly_dark',
-            title='SRC values',
+            title=f'SRC values: {args.file_in}',
 
             hover_name='datetime',
             hover_data=['tot_days'],
@@ -88,7 +88,7 @@ def main(argv: list[str] | None = None) -> int:
                if k in ('latest_rate', 'avg_rate')
                or k.endswith((':latest_rate', ':avg_rate'))],
             template='plotly_dark',
-            title='Rate values',
+            title=f'Rate values: {args.file_in}',
 
             hover_name='datetime',
             hover_data=['tot_days'],
@@ -108,7 +108,7 @@ def main(argv: list[str] | None = None) -> int:
                if k in ('tot_gain_src', 'tot_gain_net_src')
                or k.endswith((':tot_gain_src', ':tot_gain_net_src'))],
             template='plotly_dark',
-            title='Gain values',
+            title=f'Gain values: {args.file_in}',
 
             hover_name='datetime',
             hover_data=['tot_days'],
@@ -124,7 +124,7 @@ def main(argv: list[str] | None = None) -> int:
             y=[k for k in data[0].keys()
                if k == 'global_apy' or k.endswith(':global_apy')],
             template='plotly_dark',
-            title='APY values',
+            title=f'APY values: {args.file_in}',
 
             hover_name='datetime',
             hover_data=['tot_days'],
