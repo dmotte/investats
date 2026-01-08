@@ -161,6 +161,7 @@ def aggregate_series(
 
         ########################################################################
 
+        # TODO fix keys order, otherwise test_save_data fails
         aggr |= {k: sum(e[k] for e in named_entries.values())
                  for k in KEYS_SUM_DEF_ZERO} | \
                 {k: sum(named_entries[name][k] if name in named_entries
