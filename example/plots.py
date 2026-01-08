@@ -27,7 +27,7 @@ def load_data(file: TextIO) -> Iterator[dict[str, Any]]:
         x[k] = dup.parse(v)
 
         for k, v in iterator:
-            x[k] = float(v)
+            x[k] = None if v == '' else float(v)
 
         yield x
 

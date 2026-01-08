@@ -56,7 +56,8 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
         if key == 'datetime' or key.endswith(':latest_cgt'):
             return str
 
-        if key in ('diff_days', 'tot_days'):
+        if key in ('diff_days', 'tot_days') \
+                or key.endswith((':diff_days', ':tot_days')):
             return func_days
 
         if key in ('diff_src', 'tot_src', 'tot_dst_as_src',
@@ -85,7 +86,8 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
 
     print(','.join(fields.keys()), file=file)
     for x in data:
-        print(','.join(f(x[k]) for k, f in fields.items()), file=file)
+        print(','.join('' if x is None else f(x[k])
+                       for k, f in fields.items()), file=file)
 
 
 def aggregate_series(
@@ -96,45 +98,78 @@ def aggregate_series(
     if len(named_series) < 2:
         raise ValueError('The number of series must be >= 2')
 
-    names = list(named_series.keys())
-    series = list(named_series.values())
+    # Keys of the input fields for which the values from the series must be
+    # summed, and missing values must be considered zero
+    KEYS_SUM_DEF_ZERO = ('diff_src',
+                         'chkpt_gain_src', 'chkpt_gain_net_src')
+    # Keys of the input fields for which the values from the series must be
+    # summed, and missing values must be considered equal to the previous entry
+    # if any, or zero if there is no previous entry (i.e. the series has
+    # not started yet)
+    KEYS_SUM_DEF_PREV = ('tot_src', 'tot_dst_as_src',
+                         'tot_gain_src', 'tot_gain_net_src')
 
-    length = len(series[0])
-    for s in series[1:]:
-        len_s = len(s)
-        if len_s != length:
-            raise ValueError('Series are not all the same length: '
-                             f'{len_s} != {length}')
+    keys_specific = [k for k in next(iter(named_series.values()))[0].keys()
+                     if k != 'datetime']
 
-    for i in range(length):
-        d = series[0][i]['datetime']
-        for s in series[1:]:
-            d_s = s[i]['datetime']
-            if d_s != d:
-                raise ValueError('Mismatching checkpoint datetime: '
-                                 f'{d_s} != {d}')
+    ############################################################################
 
-    KEYS_COMMON = ('datetime', 'diff_days', 'tot_days')
-    KEYS_SUM = ('diff_src', 'tot_src', 'tot_dst_as_src',
-                'chkpt_gain_src', 'chkpt_gain_net_src',
-                'tot_gain_src', 'tot_gain_net_src')
+    iterators = {name: iter(series) for name, series in named_series.items()}
 
-    keys_specific = [k for k in series[0][0].keys() if k not in KEYS_COMMON]
-
-    result = []
-
-    for i in range(length):
-        named_entries = {name: named_series[name][i] for name in names}
-        entries = list(named_entries.values())
-
-        result.append({k: entries[0][k] for k in KEYS_COMMON} |
-                      {k: sum(e[k] for e in entries) for k in KEYS_SUM} |
-                      {f'{name}:{k}': named_entries[name][k]
-                       for name in names for k in keys_specific})
+    # Entries preceding the ones in curr_entries.
+    # If an entry is missing in this dict, it basically means the related
+    # series has not started yet
+    prev_entries = {}
+    # This dict always contains the entries related to the iterators positions.
+    # If an entry is missing in this dict, it basically means the related
+    # series has ended
+    curr_entries = {}
+    for name, it in iterators.items():
+        try:
+            curr_entries[name] = next(it)
+        except StopIteration:
+            pass
 
     prev_aggr = None
 
-    for aggr in result:
+    while len(curr_entries) > 0:
+        min_dt = min(e['datetime'] for e in curr_entries.values())
+
+        # This dict contains only the entries related to the
+        # current datetime (min_dt)
+        named_entries = {name: entry for name, entry in curr_entries.items()
+                         if entry['datetime'] == min_dt}
+
+        aggr = {'datetime': min_dt}  # Aggregated (output) entry
+
+        ########################################################################
+
+        # We compute the days fields using the same formulas as
+        # the "investats" module
+        if prev_aggr is None:
+            aggr['diff_days'] = 0
+            aggr['tot_days'] = 0
+        else:
+            aggr['diff_days'] = (
+                min_dt - prev_aggr['datetime']
+            ).total_seconds() / 60 / 60 / 24
+            aggr['tot_days'] = prev_aggr['tot_days'] + aggr['diff_days']
+
+        ########################################################################
+
+        aggr |= {k: sum(e[k] for e in named_entries.values())
+                 for k in KEYS_SUM_DEF_ZERO} | \
+                {k: sum(named_entries[name][k] if name in named_entries
+                        else prev_entries[name][k] if name in prev_entries
+                        else 0
+                        for name in named_series.keys())
+                 for k in KEYS_SUM_DEF_PREV} | \
+                {f'{name}:{k}': named_entries[name][k] if name in named_entries
+                 else None
+                 for name in named_series.keys() for k in keys_specific}
+
+        ########################################################################
+
         # We calculate the "aggregate yields" using the following alternative
         # (but equivalent) formulas
 
@@ -153,9 +188,27 @@ def aggregate_series(
             or aggr['tot_days'] == 0 \
             else (1 + aggr['global_yield']) ** (365 / aggr['tot_days']) - 1
 
-        prev_aggr = aggr
+        ########################################################################
 
         yield aggr
+
+        prev_aggr = aggr
+
+        ########################################################################
+
+        for name, entry in named_entries.items():
+            if name in prev_entries:
+                prev = prev_entries[name]
+
+                if prev['datetime'] >= min_dt:
+                    raise ValueError('Invalid entry order: ' +
+                                     str(prev['datetime']) + ' >= ' + min_dt)
+
+            prev_entries[name] = entry
+            try:
+                curr_entries[name] = next(iterators[name])
+            except StopIteration:
+                del curr_entries[name]
 
 
 def main(argv: list[str] | None = None) -> int:
