@@ -99,6 +99,11 @@ def aggregate_series(
         raise ValueError('The number of series must be >= 2')
 
     # Keys of the input fields for which the values from the series must be
+    # summed, in the correct order for output
+    KEYS_SUM_ORDERED = ('diff_src', 'tot_src', 'tot_dst_as_src',
+                        'chkpt_gain_src', 'chkpt_gain_net_src',
+                        'tot_gain_src', 'tot_gain_net_src')
+    # Keys of the input fields for which the values from the series must be
     # summed, and missing values must be considered zero
     KEYS_SUM_DEF_ZERO = ('diff_src',
                          'chkpt_gain_src', 'chkpt_gain_net_src')
@@ -106,8 +111,8 @@ def aggregate_series(
     # summed, and missing values must be considered equal to the previous entry
     # if any, or zero if there is no previous entry (i.e. the series has
     # not started yet)
-    KEYS_SUM_DEF_PREV = ('tot_src', 'tot_dst_as_src',
-                         'tot_gain_src', 'tot_gain_net_src')
+    keys_sum_def_prev = [k for k in KEYS_SUM_ORDERED
+                         if k not in KEYS_SUM_DEF_ZERO]
 
     keys_specific = [k for k in next(iter(named_series.values()))[0].keys()
                      if k != 'datetime']
@@ -161,14 +166,13 @@ def aggregate_series(
 
         ########################################################################
 
-        # TODO fix keys order, otherwise test_save_data fails
-        aggr |= {k: sum(e[k] for e in named_entries.values())
-                 for k in KEYS_SUM_DEF_ZERO} | \
-                {k: sum(named_entries[name][k] if name in named_entries
+        aggr |= {k: sum(named_entries[name][k] if name in named_entries
                         else prev_entries[name][k] if name in prev_entries
                         else 0
                         for name in named_series.keys())
-                 for k in KEYS_SUM_DEF_PREV} | \
+                 if k in keys_sum_def_prev
+                 else sum(e[k] for e in named_entries.values())
+                 for k in KEYS_SUM_ORDERED} | \
                 {f'{name}:{k}': named_entries[name][k] if name in named_entries
                  else None
                  for name in named_series.keys() for k in keys_specific}
