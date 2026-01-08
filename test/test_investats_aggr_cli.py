@@ -9,6 +9,7 @@ from copy import deepcopy
 from datetime import datetime as dt
 from datetime import timezone as tz
 
+from investats import compute_stats
 from investats_aggr import pair_items_to_dict, load_data, save_data, \
     aggregate_series
 
@@ -55,10 +56,43 @@ def test_load_data() -> None:
 def test_save_data() -> None:
     # TODO add case with None that turns into empty string
 
-    # TODO check that the data in this function aligns with the
-    # data in test_aggregate_series
+    data = list(aggregate_series({
+        'AAA': list(compute_stats([
+            {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 500, 'rate': 100},
+            {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'chkpt'},
 
-    data = [
+            {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 700, 'rate': 70},
+            {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'chkpt',
+             'cgt': 0.15},
+
+            {'datetime': dt(2020, 3, 10, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 200, 'rate': 50},
+            {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 50, 'rate': 200},
+            {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'chkpt'},
+        ])),
+        'BBB': list(compute_stats([
+            {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 500, 'rate': 50},
+            {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'chkpt'},
+
+            {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 1400, 'rate': 70},
+            {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'chkpt',
+             'cgt': 0.20},
+
+            {'datetime': dt(2020, 3, 10, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 200, 'rate': 50},
+            {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 50, 'rate': 200},
+            {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'chkpt'},
+        ])),
+    }))
+
+    # Ensure that the input data has been prepared correctly
+    assert data == [
         {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
 
@@ -117,7 +151,7 @@ def test_save_data() -> None:
          'BBB:tot_gain_src': 200, 'BBB:tot_gain_net_src': 160,
 
          'chkpt_yield': 0.05, 'chkpt_apy': 0.7761797254076475,
-         'global_yield': 0.05, 'global_apy': 0.7761797254076475},
+         'global_yield': 0.016129032258064516, 'global_apy': 0.20730561938737058},
 
         {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
          'diff_days': 29, 'tot_days': 60,
@@ -147,7 +181,7 @@ def test_save_data() -> None:
          'BBB:tot_gain_src': 4700, 'BBB:tot_gain_net_src': 3760,
 
          'chkpt_yield': 2.238095238095238, 'chkpt_apy': 2646126.1510352483,
-         'global_yield': 7.1, 'global_apy': 336214.0873987736},
+         'global_yield': 1.9722222222222223, 'global_apy': 753.9376784192543},
     ]
 
     headers_line = (
