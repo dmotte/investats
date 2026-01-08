@@ -135,6 +135,10 @@ def aggregate_series(
     while len(curr_entries) > 0:
         min_dt = min(e['datetime'] for e in curr_entries.values())
 
+        if prev_aggr is not None and prev_aggr['datetime'] >= min_dt:
+            raise ValueError('Invalid entry order: ' +
+                             str(prev_aggr['datetime']) + ' >= ' + str(min_dt))
+
         # This dict contains only the entries related to the
         # current datetime (min_dt)
         named_entries = {name: entry for name, entry in curr_entries.items()
@@ -194,16 +198,7 @@ def aggregate_series(
 
         prev_aggr = aggr
 
-        ########################################################################
-
         for name, entry in named_entries.items():
-            if name in prev_entries:
-                prev = prev_entries[name]
-
-                if prev['datetime'] >= min_dt:
-                    raise ValueError('Invalid entry order: ' +
-                                     str(prev['datetime']) + ' >= ' + min_dt)
-
             prev_entries[name] = entry
             try:
                 curr_entries[name] = next(iterators[name])

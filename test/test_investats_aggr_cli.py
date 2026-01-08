@@ -406,4 +406,22 @@ def test_aggregate_series() -> None:
         list(aggregate_series({}))
     assert exc_info.value.args == ('The number of series must be >= 2',)
 
-    # TODO test invalid entry order
+    named_series = deepcopy(named_series_orig)
+    named_series['BBB'][1]['datetime'] = dt(2020, 1, 11, tzinfo=tz.utc)
+    named_series_copy = deepcopy(named_series)
+    with pytest.raises(ValueError) as exc_info:
+        list(aggregate_series(named_series))
+    assert exc_info.value.args == (
+        'Invalid entry order: 2020-01-12 00:00:00+00:00 >= '
+        '2020-01-11 00:00:00+00:00',)
+    assert named_series == named_series_copy
+
+    named_series = deepcopy(named_series_orig)
+    named_series['BBB'][1]['datetime'] = dt(2020, 1, 12, tzinfo=tz.utc)
+    named_series_copy = deepcopy(named_series)
+    with pytest.raises(ValueError) as exc_info:
+        list(aggregate_series(named_series))
+    assert exc_info.value.args == (
+        'Invalid entry order: 2020-01-12 00:00:00+00:00 >= '
+        '2020-01-12 00:00:00+00:00',)
+    assert named_series == named_series_copy
