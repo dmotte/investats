@@ -54,8 +54,6 @@ def test_load_data() -> None:
 
 
 def test_save_data() -> None:
-    # TODO add case with None that turns into empty string
-
     data = list(aggregate_series({
         'AAA': list(compute_stats([
             {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'invest',
@@ -256,6 +254,157 @@ def test_save_data() -> None:
     buf.seek(0)
 
     assert buf.read() == csv
+
+    ############################################################################
+
+    data = list(aggregate_series({
+        'AAA': list(compute_stats([
+            {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 500, 'rate': 100},
+            {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'chkpt'},
+
+            {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 700, 'rate': 70},
+            {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'chkpt',
+             'cgt': 0.15},
+
+            {'datetime': dt(2020, 3, 10, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 200, 'rate': 50},
+            {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 50, 'rate': 200},
+            {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'chkpt'},
+        ])),
+        'BBB': list(compute_stats([
+            {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 500, 'rate': 50},
+            {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'chkpt'},
+
+            {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'invest',
+             'inv_src': 1400, 'rate': 70},
+            {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'chkpt',
+             'cgt': 0.20},
+        ])),
+    }))
+
+    # Ensure that the input data has been prepared correctly
+    assert data == [
+        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
+         'diff_days': 0, 'tot_days': 0,
+
+         'diff_src': 1000, 'tot_src': 1000, 'tot_dst_as_src': 1000,
+         'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
+         'tot_gain_src': 0, 'tot_gain_net_src': 0,
+
+         'AAA:diff_days': 0, 'AAA:tot_days': 0,
+         'AAA:diff_src': 500, 'AAA:diff_dst': 5, 'AAA:latest_rate': 100,
+         'AAA:tot_src': 500, 'AAA:tot_dst': 5, 'AAA:avg_rate': 100,
+         'AAA:tot_dst_as_src': 500,
+         'AAA:chkpt_yield': 0, 'AAA:chkpt_apy': 0,
+         'AAA:global_yield': 0, 'AAA:global_apy': 0,
+         'AAA:latest_cgt': 0,
+         'AAA:chkpt_gain_src': 0, 'AAA:chkpt_gain_net_src': 0,
+         'AAA:tot_gain_src': 0, 'AAA:tot_gain_net_src': 0,
+
+         'BBB:diff_days': 0, 'BBB:tot_days': 0,
+         'BBB:diff_src': 500, 'BBB:diff_dst': 10, 'BBB:latest_rate': 50,
+         'BBB:tot_src': 500, 'BBB:tot_dst': 10, 'BBB:avg_rate': 50,
+         'BBB:tot_dst_as_src': 500,
+         'BBB:chkpt_yield': 0, 'BBB:chkpt_apy': 0,
+         'BBB:global_yield': 0, 'BBB:global_apy': 0,
+         'BBB:latest_cgt': 0,
+         'BBB:chkpt_gain_src': 0, 'BBB:chkpt_gain_net_src': 0,
+         'BBB:tot_gain_src': 0, 'BBB:tot_gain_net_src': 0,
+
+         'chkpt_yield': 0, 'chkpt_apy': 0,
+         'global_yield': 0, 'global_apy': 0},
+
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
+         'diff_days': 31, 'tot_days': 31,
+
+         'diff_src': 2100, 'tot_src': 3100, 'tot_dst_as_src': 3150,
+         'chkpt_gain_src': 50, 'chkpt_gain_net_src': 32.5,
+         'tot_gain_src': 50, 'tot_gain_net_src': 32.5,
+
+         'AAA:diff_days': 31, 'AAA:tot_days': 31,
+         'AAA:diff_src': 700, 'AAA:diff_dst': 10, 'AAA:latest_rate': 70,
+         'AAA:tot_src': 1200, 'AAA:tot_dst': 15, 'AAA:avg_rate': 80,
+         'AAA:tot_dst_as_src': 1050,
+         'AAA:chkpt_yield': -0.30000000000000004, 'AAA:chkpt_apy': -0.9849978210304741,
+         'AAA:global_yield': -0.125, 'AAA:global_apy': -0.7924170918049609,
+         'AAA:latest_cgt': 0.15,
+         'AAA:chkpt_gain_src': -150, 'AAA:chkpt_gain_net_src': -127.5,
+         'AAA:tot_gain_src': -150, 'AAA:tot_gain_net_src': -127.5,
+
+         'BBB:diff_days': 31, 'BBB:tot_days': 31,
+         'BBB:diff_src': 1400, 'BBB:diff_dst': 20, 'BBB:latest_rate': 70,
+         'BBB:tot_src': 1900, 'BBB:tot_dst': 30, 'BBB:avg_rate': 63.333333333333336,
+         'BBB:tot_dst_as_src': 2100,
+         'BBB:chkpt_yield': 0.3999999999999999, 'BBB:chkpt_apy': 51.546013724696195,
+         'BBB:global_yield': 0.10526315789473673, 'BBB:global_apy': 2.249177905018738,
+         'BBB:latest_cgt': 0.20,
+         'BBB:chkpt_gain_src': 200, 'BBB:chkpt_gain_net_src': 160,
+         'BBB:tot_gain_src': 200, 'BBB:tot_gain_net_src': 160,
+
+         'chkpt_yield': 0.05, 'chkpt_apy': 0.7761797254076475,
+         'global_yield': 0.016129032258064516, 'global_apy': 0.20730561938737058},
+
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
+         'diff_days': 29, 'tot_days': 60,
+
+         'diff_src': 250, 'tot_src': 3350, 'tot_dst_as_src': 5950,
+         'chkpt_gain_src': 2550, 'chkpt_gain_net_src': 2167.5,
+         'tot_gain_src': 2600, 'tot_gain_net_src': 2200,
+
+         'AAA:diff_days': 29, 'AAA:tot_days': 60,
+         'AAA:diff_src': 250, 'AAA:diff_dst': 4.25, 'AAA:latest_rate': 200,
+         'AAA:tot_src': 1450, 'AAA:tot_dst': 19.25, 'AAA:avg_rate': 75.32467532467533,
+         'AAA:tot_dst_as_src': 3850,
+         'AAA:chkpt_yield': 1.8571428571428572, 'AAA:chkpt_apy': 547587.0028295065,
+         'AAA:global_yield': 1.6551724137931032, 'AAA:global_apy': 379.0996102191754,
+         'AAA:latest_cgt': 0.15,
+         'AAA:chkpt_gain_src': 2550, 'AAA:chkpt_gain_net_src': 2167.5,
+         'AAA:tot_gain_src': 2400, 'AAA:tot_gain_net_src': 2040,
+
+         'BBB:diff_days': None, 'BBB:tot_days': None,
+         'BBB:diff_src': None, 'BBB:diff_dst': None, 'BBB:latest_rate': None,
+         'BBB:tot_src': None, 'BBB:tot_dst': None, 'BBB:avg_rate': None,
+         'BBB:tot_dst_as_src': None,
+         'BBB:chkpt_yield': None, 'BBB:chkpt_apy': None,
+         'BBB:global_yield': None, 'BBB:global_apy': None,
+         'BBB:latest_cgt': None,
+         'BBB:chkpt_gain_src': None, 'BBB:chkpt_gain_net_src': None,
+         'BBB:tot_gain_src': None, 'BBB:tot_gain_net_src': None,
+
+         'chkpt_yield': 0.8095238095238095, 'chkpt_apy': 1743.8479705869902,
+         'global_yield': 0.7761194029850746, 'global_apy': 31.93231787318252},
+    ]
+
+    csv = '\n'.join((
+        headers_line,
+        #
+        '2020-01-12 00:00:00+00:00,0,0,1000,1000,1000.0,0,0,0.0,0.0,'
+        '0,0,500,5.0,100,500,5.0,100.0,500.0,0,0,0.0,0,0,0,0,0.0,0.0,'
+        '0,0,500,10.0,50,500,10.0,50.0,500.0,0,0,0.0,0,0,0,0,0.0,0.0,'
+        '0,0,0.0,0',
+        #
+        '2020-02-12 00:00:00+00:00,31.0,31.0,2100,3100,3150.0,50.0,32.5,50.0,32.5,'
+        '31.0,31.0,700,10.0,70,1200,15.0,80.0,1050.0,-0.30000000000000004,-0.9849978210304741,-0.125,-0.7924170918049609,0.15,-150.0,-127.5,-150.0,-127.5,'
+        '31.0,31.0,1400,20.0,70,1900,30.0,63.333333333333336,2100.0,0.3999999999999999,51.546013724696195,0.10526315789473673,2.249177905018738,0.2,200.0,160.0,200.0,160.0,'
+        '0.05,0.7761797254076475,0.016129032258064516,0.20730561938737058',
+        #
+        '2020-03-12 00:00:00+00:00,29.0,60.0,250,3350,5950.0,2550.0,2167.5,2600.0,2200.0,'
+        '29.0,60.0,250,4.25,200,1450,19.25,75.32467532467533,3850.0,1.8571428571428572,547587.0028295065,1.6551724137931032,379.0996102191754,0.15,2550.0,2167.5,2400.0,2040.0,'
+        ',,,,,,,,,,,,,,,,,,'
+        '0.8095238095238095,1743.8479705869902,0.7761194029850746,31.93231787318252',
+    )) + '\n'
+
+    buf = io.StringIO()
+    save_data(data, buf)
+    buf.seek(0)
+
+    assert buf.read() == csv
+
+    ############################################################################
 
     data_bad = [{'datetime': 12345, 'asdfghjkl': 67890},
                 {'datetime': 11223, 'asdfghjkl': 34455},

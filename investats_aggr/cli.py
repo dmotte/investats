@@ -86,7 +86,7 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
 
     print(','.join(fields.keys()), file=file)
     for x in data:
-        print(','.join('' if x is None else f(x[k])
+        print(','.join('' if x[k] is None else f(x[k])
                        for k, f in fields.items()), file=file)
 
 
