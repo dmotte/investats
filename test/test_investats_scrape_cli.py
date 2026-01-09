@@ -7,8 +7,11 @@ import pytest
 
 from datetime import datetime as dt
 from datetime import timezone as tz
+from dateutil.tz import UTC
 
 from investats_scrape import is_txn_valid, load_data, save_data, txns_to_entries
+
+from util import pfmt
 
 
 def test_is_txn_valid() -> None:
@@ -72,21 +75,21 @@ def test_load_data() -> None:
     ''')
 
     data_out_expected = [
-        {'datetime': dt(2020, 9, 12, 11, 30, tzinfo=tz.utc), 'asset': 'BBB',
+        {'datetime': dt(2020, 9, 12, 11, 30, tzinfo=UTC), 'asset': 'BBB',
          'rate': '25.0000', 'inv_dst': '25'},
-        {'datetime': dt(2020, 10, 12, 12, tzinfo=tz.utc), 'asset': 'AAA',
+        {'datetime': dt(2020, 10, 12, 12, tzinfo=UTC), 'asset': 'AAA',
          'rate': '125.0000', 'inv_dst': '22'},
-        {'datetime': dt(2020, 10, 12, 12, 30, tzinfo=tz.utc), 'asset': 'BBB',
+        {'datetime': dt(2020, 10, 12, 12, 30, tzinfo=UTC), 'asset': 'BBB',
          'rate': '20.0000', 'inv_src': '400.00'},
-        {'datetime': dt(2020, 11, 12, 14, tzinfo=tz.utc), 'asset': 'AAA',
+        {'datetime': dt(2020, 11, 12, 14, tzinfo=UTC), 'asset': 'AAA',
          'rate': '130.0000', 'inv_src': '2080.00'},
-        {'datetime': dt(2020, 11, 12, 14, 30, tzinfo=tz.utc), 'asset': 'BBB',
+        {'datetime': dt(2020, 11, 12, 14, 30, tzinfo=UTC), 'asset': 'BBB',
          'rate': '25.0000', 'inv_dst': '15'},
     ]
 
     data = list(load_data(io.StringIO(txt), '#####', 'Datetime:', 'Asset:',
                           'Amount:', 'Shares:', 'Price:'))
-    assert data == data_out_expected
+    assert pfmt(data) == pfmt(data_out_expected)
 
     txt += textwrap.dedent('''\
         ########## TRANSACTION ##########
@@ -94,7 +97,7 @@ def test_load_data() -> None:
 
     data = list(load_data(io.StringIO(txt), '#####', 'Datetime:', 'Asset:',
                           'Amount:', 'Shares:', 'Price:'))
-    assert data == data_out_expected
+    assert pfmt(data) == pfmt(data_out_expected)
 
     with pytest.raises(ValueError, match=r'Invalid transaction: {.+}'):
         list(load_data(io.StringIO(txt), '#####', 'Datetime:', 'Asset:',
@@ -155,8 +158,8 @@ def test_txns_to_entries() -> None:
     data_in = [x.copy() for x in data_in_orig]
     data_in_copy = [x.copy() for x in data_in]
     data_out = list(txns_to_entries(data_in, 'AAA'))
-    assert data_in == data_in_copy
-    assert data_out == data_out_expected
+    assert pfmt(data_in) == pfmt(data_in_copy)
+    assert pfmt(data_out) == pfmt(data_out_expected)
 
     data_out_expected = [
         {'datetime': dt(2020, 10, 12, 12, tzinfo=tz.utc), 'type': 'invest',
@@ -173,8 +176,8 @@ def test_txns_to_entries() -> None:
     data_in = [x.copy() for x in data_in_orig]
     data_in_copy = [x.copy() for x in data_in]
     data_out = list(txns_to_entries(data_in, 'AAA', '0.15'))
-    assert data_in == data_in_copy
-    assert data_out == data_out_expected
+    assert pfmt(data_in) == pfmt(data_in_copy)
+    assert pfmt(data_out) == pfmt(data_out_expected)
 
     data_out_expected = [
         {'datetime': dt(2020, 9, 12, 11, 30, tzinfo=tz.utc), 'type': 'invest',
@@ -191,5 +194,5 @@ def test_txns_to_entries() -> None:
     data_in = [x.copy() for x in data_in_orig]
     data_in_copy = [x.copy() for x in data_in]
     data_out = list(txns_to_entries(data_in, 'BBB'))
-    assert data_in == data_in_copy
-    assert data_out == data_out_expected
+    assert pfmt(data_in) == pfmt(data_in_copy)
+    assert pfmt(data_out) == pfmt(data_out_expected)

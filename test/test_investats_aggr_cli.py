@@ -8,10 +8,13 @@ import pytest
 from copy import deepcopy
 from datetime import datetime as dt
 from datetime import timezone as tz
+from dateutil.tz import UTC
 
 from investats import compute_stats
 from investats_aggr import pair_items_to_dict, load_data, save_data, \
     aggregate_series
+
+from util import pfmt
 
 
 def test_pair_items_to_dict() -> None:
@@ -41,16 +44,16 @@ def test_load_data() -> None:
 
     data = list(load_data(io.StringIO(csv)))
 
-    assert data == [
-        {'datetime': dt(2020, 1, 1, tzinfo=tz.utc),
-         'field01': 0, 'field02': 0, 'field03': 0},
-        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
-         'field01': 11, 'field02': 11, 'field03': 500},
-        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
-         'field01': 31, 'field02': 42, 'field03': 700.123},
-        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
-         'field01': 29, 'field02': 71, 'field03': 250.001},
-    ]
+    assert pfmt(data) == pfmt([
+        {'datetime': dt(2020, 1, 1, tzinfo=UTC),
+         'field01': 0.0, 'field02': 0.0, 'field03': 0.0},
+        {'datetime': dt(2020, 1, 12, tzinfo=UTC),
+         'field01': 11.0, 'field02': 11.0, 'field03': 500.0},
+        {'datetime': dt(2020, 2, 12, tzinfo=UTC),
+         'field01': 31.0, 'field02': 42.0, 'field03': 700.123},
+        {'datetime': dt(2020, 3, 12, tzinfo=UTC),
+         'field01': 29.0, 'field02': 71.0, 'field03': 250.001},
+    ])
 
 
 def test_save_data() -> None:
@@ -90,97 +93,97 @@ def test_save_data() -> None:
     }))
 
     # Ensure that the input data has been prepared correctly
-    assert data == [
+    assert pfmt(data) == pfmt([
         {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
 
-         'diff_src': 1000, 'tot_src': 1000, 'tot_dst_as_src': 1000,
+         'diff_src': 1000, 'tot_src': 1000, 'tot_dst_as_src': 1000.0,
          'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
-         'tot_gain_src': 0, 'tot_gain_net_src': 0,
+         'tot_gain_src': 0.0, 'tot_gain_net_src': 0.0,
 
          'AAA:diff_days': 0, 'AAA:tot_days': 0,
-         'AAA:diff_src': 500, 'AAA:diff_dst': 5, 'AAA:latest_rate': 100,
-         'AAA:tot_src': 500, 'AAA:tot_dst': 5, 'AAA:avg_rate': 100,
-         'AAA:tot_dst_as_src': 500,
+         'AAA:diff_src': 500, 'AAA:diff_dst': 5.0, 'AAA:latest_rate': 100,
+         'AAA:tot_src': 500, 'AAA:tot_dst': 5.0, 'AAA:avg_rate': 100.0,
+         'AAA:tot_dst_as_src': 500.0,
          'AAA:chkpt_yield': 0, 'AAA:chkpt_apy': 0,
-         'AAA:global_yield': 0, 'AAA:global_apy': 0,
+         'AAA:global_yield': 0.0, 'AAA:global_apy': 0,
          'AAA:latest_cgt': 0,
          'AAA:chkpt_gain_src': 0, 'AAA:chkpt_gain_net_src': 0,
-         'AAA:tot_gain_src': 0, 'AAA:tot_gain_net_src': 0,
+         'AAA:tot_gain_src': 0.0, 'AAA:tot_gain_net_src': 0.0,
 
          'BBB:diff_days': 0, 'BBB:tot_days': 0,
-         'BBB:diff_src': 500, 'BBB:diff_dst': 10, 'BBB:latest_rate': 50,
-         'BBB:tot_src': 500, 'BBB:tot_dst': 10, 'BBB:avg_rate': 50,
-         'BBB:tot_dst_as_src': 500,
+         'BBB:diff_src': 500, 'BBB:diff_dst': 10.0, 'BBB:latest_rate': 50,
+         'BBB:tot_src': 500, 'BBB:tot_dst': 10.0, 'BBB:avg_rate': 50.0,
+         'BBB:tot_dst_as_src': 500.0,
          'BBB:chkpt_yield': 0, 'BBB:chkpt_apy': 0,
-         'BBB:global_yield': 0, 'BBB:global_apy': 0,
+         'BBB:global_yield': 0.0, 'BBB:global_apy': 0,
          'BBB:latest_cgt': 0,
          'BBB:chkpt_gain_src': 0, 'BBB:chkpt_gain_net_src': 0,
-         'BBB:tot_gain_src': 0, 'BBB:tot_gain_net_src': 0,
+         'BBB:tot_gain_src': 0.0, 'BBB:tot_gain_net_src': 0.0,
 
          'chkpt_yield': 0, 'chkpt_apy': 0,
-         'global_yield': 0, 'global_apy': 0},
+         'global_yield': 0.0, 'global_apy': 0},
 
         {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
-         'diff_days': 31, 'tot_days': 31,
+         'diff_days': 31.0, 'tot_days': 31.0,
 
-         'diff_src': 2100, 'tot_src': 3100, 'tot_dst_as_src': 3150,
-         'chkpt_gain_src': 50, 'chkpt_gain_net_src': 32.5,
-         'tot_gain_src': 50, 'tot_gain_net_src': 32.5,
+         'diff_src': 2100, 'tot_src': 3100, 'tot_dst_as_src': 3150.0,
+         'chkpt_gain_src': 50.0, 'chkpt_gain_net_src': 32.5,
+         'tot_gain_src': 50.0, 'tot_gain_net_src': 32.5,
 
-         'AAA:diff_days': 31, 'AAA:tot_days': 31,
-         'AAA:diff_src': 700, 'AAA:diff_dst': 10, 'AAA:latest_rate': 70,
-         'AAA:tot_src': 1200, 'AAA:tot_dst': 15, 'AAA:avg_rate': 80,
-         'AAA:tot_dst_as_src': 1050,
+         'AAA:diff_days': 31.0, 'AAA:tot_days': 31.0,
+         'AAA:diff_src': 700, 'AAA:diff_dst': 10.0, 'AAA:latest_rate': 70,
+         'AAA:tot_src': 1200, 'AAA:tot_dst': 15.0, 'AAA:avg_rate': 80.0,
+         'AAA:tot_dst_as_src': 1050.0,
          'AAA:chkpt_yield': -0.30000000000000004, 'AAA:chkpt_apy': -0.9849978210304741,
          'AAA:global_yield': -0.125, 'AAA:global_apy': -0.7924170918049609,
          'AAA:latest_cgt': 0.15,
-         'AAA:chkpt_gain_src': -150, 'AAA:chkpt_gain_net_src': -127.5,
-         'AAA:tot_gain_src': -150, 'AAA:tot_gain_net_src': -127.5,
+         'AAA:chkpt_gain_src': -150.0, 'AAA:chkpt_gain_net_src': -127.5,
+         'AAA:tot_gain_src': -150.0, 'AAA:tot_gain_net_src': -127.5,
 
-         'BBB:diff_days': 31, 'BBB:tot_days': 31,
-         'BBB:diff_src': 1400, 'BBB:diff_dst': 20, 'BBB:latest_rate': 70,
-         'BBB:tot_src': 1900, 'BBB:tot_dst': 30, 'BBB:avg_rate': 63.333333333333336,
-         'BBB:tot_dst_as_src': 2100,
+         'BBB:diff_days': 31.0, 'BBB:tot_days': 31.0,
+         'BBB:diff_src': 1400, 'BBB:diff_dst': 20.0, 'BBB:latest_rate': 70,
+         'BBB:tot_src': 1900, 'BBB:tot_dst': 30.0, 'BBB:avg_rate': 63.333333333333336,
+         'BBB:tot_dst_as_src': 2100.0,
          'BBB:chkpt_yield': 0.3999999999999999, 'BBB:chkpt_apy': 51.546013724696195,
          'BBB:global_yield': 0.10526315789473673, 'BBB:global_apy': 2.249177905018738,
          'BBB:latest_cgt': 0.20,
-         'BBB:chkpt_gain_src': 200, 'BBB:chkpt_gain_net_src': 160,
-         'BBB:tot_gain_src': 200, 'BBB:tot_gain_net_src': 160,
+         'BBB:chkpt_gain_src': 200.0, 'BBB:chkpt_gain_net_src': 160.0,
+         'BBB:tot_gain_src': 200.0, 'BBB:tot_gain_net_src': 160.0,
 
          'chkpt_yield': 0.05, 'chkpt_apy': 0.7761797254076475,
          'global_yield': 0.016129032258064516, 'global_apy': 0.20730561938737058},
 
         {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
-         'diff_days': 29, 'tot_days': 60,
+         'diff_days': 29.0, 'tot_days': 60.0,
 
-         'diff_src': 500, 'tot_src': 3600, 'tot_dst_as_src': 10_700,
-         'chkpt_gain_src': 7050, 'chkpt_gain_net_src': 5767.5,
-         'tot_gain_src': 7100, 'tot_gain_net_src': 5800,
+         'diff_src': 500, 'tot_src': 3600, 'tot_dst_as_src': 10_700.0,
+         'chkpt_gain_src': 7050.0, 'chkpt_gain_net_src': 5767.5,
+         'tot_gain_src': 7100.0, 'tot_gain_net_src': 5800.0,
 
-         'AAA:diff_days': 29, 'AAA:tot_days': 60,
+         'AAA:diff_days': 29.0, 'AAA:tot_days': 60.0,
          'AAA:diff_src': 250, 'AAA:diff_dst': 4.25, 'AAA:latest_rate': 200,
          'AAA:tot_src': 1450, 'AAA:tot_dst': 19.25, 'AAA:avg_rate': 75.32467532467533,
-         'AAA:tot_dst_as_src': 3850,
+         'AAA:tot_dst_as_src': 3850.0,
          'AAA:chkpt_yield': 1.8571428571428572, 'AAA:chkpt_apy': 547587.0028295065,
          'AAA:global_yield': 1.6551724137931032, 'AAA:global_apy': 379.0996102191754,
          'AAA:latest_cgt': 0.15,
-         'AAA:chkpt_gain_src': 2550, 'AAA:chkpt_gain_net_src': 2167.5,
-         'AAA:tot_gain_src': 2400, 'AAA:tot_gain_net_src': 2040,
+         'AAA:chkpt_gain_src': 2550.0, 'AAA:chkpt_gain_net_src': 2167.5,
+         'AAA:tot_gain_src': 2400.0, 'AAA:tot_gain_net_src': 2040.0,
 
-         'BBB:diff_days': 29, 'BBB:tot_days': 60,
+         'BBB:diff_days': 29.0, 'BBB:tot_days': 60.0,
          'BBB:diff_src': 250, 'BBB:diff_dst': 4.25, 'BBB:latest_rate': 200,
          'BBB:tot_src': 2150, 'BBB:tot_dst': 34.25, 'BBB:avg_rate': 62.77372262773723,
-         'BBB:tot_dst_as_src': 6850,
+         'BBB:tot_dst_as_src': 6850.0,
          'BBB:chkpt_yield': 1.8571428571428572, 'BBB:chkpt_apy': 547587.0028295065,
          'BBB:global_yield': 2.186046511627907, 'BBB:global_apy': 1150.9943403101925,
          'BBB:latest_cgt': 0.20,
-         'BBB:chkpt_gain_src': 4500, 'BBB:chkpt_gain_net_src': 3600,
-         'BBB:tot_gain_src': 4700, 'BBB:tot_gain_net_src': 3760,
+         'BBB:chkpt_gain_src': 4500.0, 'BBB:chkpt_gain_net_src': 3600.0,
+         'BBB:tot_gain_src': 4700.0, 'BBB:tot_gain_net_src': 3760.0,
 
          'chkpt_yield': 2.238095238095238, 'chkpt_apy': 2646126.1510352483,
          'global_yield': 1.9722222222222223, 'global_apy': 753.9376784192543},
-    ]
+    ])
 
     headers_line = (
         'datetime,diff_days,tot_days,'
@@ -287,83 +290,83 @@ def test_save_data() -> None:
     }))
 
     # Ensure that the input data has been prepared correctly
-    assert data == [
+    assert pfmt(data) == pfmt([
         {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
 
-         'diff_src': 1000, 'tot_src': 1000, 'tot_dst_as_src': 1000,
+         'diff_src': 1000, 'tot_src': 1000, 'tot_dst_as_src': 1000.0,
          'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
-         'tot_gain_src': 0, 'tot_gain_net_src': 0,
+         'tot_gain_src': 0.0, 'tot_gain_net_src': 0.0,
 
          'AAA:diff_days': 0, 'AAA:tot_days': 0,
-         'AAA:diff_src': 500, 'AAA:diff_dst': 5, 'AAA:latest_rate': 100,
-         'AAA:tot_src': 500, 'AAA:tot_dst': 5, 'AAA:avg_rate': 100,
-         'AAA:tot_dst_as_src': 500,
+         'AAA:diff_src': 500, 'AAA:diff_dst': 5.0, 'AAA:latest_rate': 100,
+         'AAA:tot_src': 500, 'AAA:tot_dst': 5.0, 'AAA:avg_rate': 100.0,
+         'AAA:tot_dst_as_src': 500.0,
          'AAA:chkpt_yield': 0, 'AAA:chkpt_apy': 0,
-         'AAA:global_yield': 0, 'AAA:global_apy': 0,
+         'AAA:global_yield': 0.0, 'AAA:global_apy': 0,
          'AAA:latest_cgt': 0,
          'AAA:chkpt_gain_src': 0, 'AAA:chkpt_gain_net_src': 0,
-         'AAA:tot_gain_src': 0, 'AAA:tot_gain_net_src': 0,
+         'AAA:tot_gain_src': 0.0, 'AAA:tot_gain_net_src': 0.0,
 
          'BBB:diff_days': 0, 'BBB:tot_days': 0,
-         'BBB:diff_src': 500, 'BBB:diff_dst': 10, 'BBB:latest_rate': 50,
-         'BBB:tot_src': 500, 'BBB:tot_dst': 10, 'BBB:avg_rate': 50,
-         'BBB:tot_dst_as_src': 500,
+         'BBB:diff_src': 500, 'BBB:diff_dst': 10.0, 'BBB:latest_rate': 50,
+         'BBB:tot_src': 500, 'BBB:tot_dst': 10.0, 'BBB:avg_rate': 50.0,
+         'BBB:tot_dst_as_src': 500.0,
          'BBB:chkpt_yield': 0, 'BBB:chkpt_apy': 0,
-         'BBB:global_yield': 0, 'BBB:global_apy': 0,
+         'BBB:global_yield': 0.0, 'BBB:global_apy': 0,
          'BBB:latest_cgt': 0,
          'BBB:chkpt_gain_src': 0, 'BBB:chkpt_gain_net_src': 0,
-         'BBB:tot_gain_src': 0, 'BBB:tot_gain_net_src': 0,
+         'BBB:tot_gain_src': 0.0, 'BBB:tot_gain_net_src': 0.0,
 
          'chkpt_yield': 0, 'chkpt_apy': 0,
-         'global_yield': 0, 'global_apy': 0},
+         'global_yield': 0.0, 'global_apy': 0},
 
         {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
-         'diff_days': 31, 'tot_days': 31,
+         'diff_days': 31.0, 'tot_days': 31.0,
 
-         'diff_src': 2100, 'tot_src': 3100, 'tot_dst_as_src': 3150,
-         'chkpt_gain_src': 50, 'chkpt_gain_net_src': 32.5,
-         'tot_gain_src': 50, 'tot_gain_net_src': 32.5,
+         'diff_src': 2100, 'tot_src': 3100, 'tot_dst_as_src': 3150.0,
+         'chkpt_gain_src': 50.0, 'chkpt_gain_net_src': 32.5,
+         'tot_gain_src': 50.0, 'tot_gain_net_src': 32.5,
 
-         'AAA:diff_days': 31, 'AAA:tot_days': 31,
-         'AAA:diff_src': 700, 'AAA:diff_dst': 10, 'AAA:latest_rate': 70,
-         'AAA:tot_src': 1200, 'AAA:tot_dst': 15, 'AAA:avg_rate': 80,
-         'AAA:tot_dst_as_src': 1050,
+         'AAA:diff_days': 31.0, 'AAA:tot_days': 31.0,
+         'AAA:diff_src': 700, 'AAA:diff_dst': 10.0, 'AAA:latest_rate': 70,
+         'AAA:tot_src': 1200, 'AAA:tot_dst': 15.0, 'AAA:avg_rate': 80.0,
+         'AAA:tot_dst_as_src': 1050.0,
          'AAA:chkpt_yield': -0.30000000000000004, 'AAA:chkpt_apy': -0.9849978210304741,
          'AAA:global_yield': -0.125, 'AAA:global_apy': -0.7924170918049609,
          'AAA:latest_cgt': 0.15,
-         'AAA:chkpt_gain_src': -150, 'AAA:chkpt_gain_net_src': -127.5,
-         'AAA:tot_gain_src': -150, 'AAA:tot_gain_net_src': -127.5,
+         'AAA:chkpt_gain_src': -150.0, 'AAA:chkpt_gain_net_src': -127.5,
+         'AAA:tot_gain_src': -150.0, 'AAA:tot_gain_net_src': -127.5,
 
-         'BBB:diff_days': 31, 'BBB:tot_days': 31,
-         'BBB:diff_src': 1400, 'BBB:diff_dst': 20, 'BBB:latest_rate': 70,
-         'BBB:tot_src': 1900, 'BBB:tot_dst': 30, 'BBB:avg_rate': 63.333333333333336,
-         'BBB:tot_dst_as_src': 2100,
+         'BBB:diff_days': 31.0, 'BBB:tot_days': 31.0,
+         'BBB:diff_src': 1400, 'BBB:diff_dst': 20.0, 'BBB:latest_rate': 70,
+         'BBB:tot_src': 1900, 'BBB:tot_dst': 30.0, 'BBB:avg_rate': 63.333333333333336,
+         'BBB:tot_dst_as_src': 2100.0,
          'BBB:chkpt_yield': 0.3999999999999999, 'BBB:chkpt_apy': 51.546013724696195,
          'BBB:global_yield': 0.10526315789473673, 'BBB:global_apy': 2.249177905018738,
          'BBB:latest_cgt': 0.20,
-         'BBB:chkpt_gain_src': 200, 'BBB:chkpt_gain_net_src': 160,
-         'BBB:tot_gain_src': 200, 'BBB:tot_gain_net_src': 160,
+         'BBB:chkpt_gain_src': 200.0, 'BBB:chkpt_gain_net_src': 160.0,
+         'BBB:tot_gain_src': 200.0, 'BBB:tot_gain_net_src': 160.0,
 
          'chkpt_yield': 0.05, 'chkpt_apy': 0.7761797254076475,
          'global_yield': 0.016129032258064516, 'global_apy': 0.20730561938737058},
 
         {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
-         'diff_days': 29, 'tot_days': 60,
+         'diff_days': 29.0, 'tot_days': 60.0,
 
-         'diff_src': 250, 'tot_src': 3350, 'tot_dst_as_src': 5950,
-         'chkpt_gain_src': 2550, 'chkpt_gain_net_src': 2167.5,
-         'tot_gain_src': 2600, 'tot_gain_net_src': 2200,
+         'diff_src': 250, 'tot_src': 3350, 'tot_dst_as_src': 5950.0,
+         'chkpt_gain_src': 2550.0, 'chkpt_gain_net_src': 2167.5,
+         'tot_gain_src': 2600.0, 'tot_gain_net_src': 2200.0,
 
-         'AAA:diff_days': 29, 'AAA:tot_days': 60,
+         'AAA:diff_days': 29.0, 'AAA:tot_days': 60.0,
          'AAA:diff_src': 250, 'AAA:diff_dst': 4.25, 'AAA:latest_rate': 200,
          'AAA:tot_src': 1450, 'AAA:tot_dst': 19.25, 'AAA:avg_rate': 75.32467532467533,
-         'AAA:tot_dst_as_src': 3850,
+         'AAA:tot_dst_as_src': 3850.0,
          'AAA:chkpt_yield': 1.8571428571428572, 'AAA:chkpt_apy': 547587.0028295065,
          'AAA:global_yield': 1.6551724137931032, 'AAA:global_apy': 379.0996102191754,
          'AAA:latest_cgt': 0.15,
-         'AAA:chkpt_gain_src': 2550, 'AAA:chkpt_gain_net_src': 2167.5,
-         'AAA:tot_gain_src': 2400, 'AAA:tot_gain_net_src': 2040,
+         'AAA:chkpt_gain_src': 2550.0, 'AAA:chkpt_gain_net_src': 2167.5,
+         'AAA:tot_gain_src': 2400.0, 'AAA:tot_gain_net_src': 2040.0,
 
          'BBB:diff_days': None, 'BBB:tot_days': None,
          'BBB:diff_src': None, 'BBB:diff_dst': None, 'BBB:latest_rate': None,
@@ -377,7 +380,7 @@ def test_save_data() -> None:
 
          'chkpt_yield': 0.8095238095238095, 'chkpt_apy': 1743.8479705869902,
          'global_yield': 0.7761194029850746, 'global_apy': 31.93231787318252},
-    ]
+    ])
 
     csv = '\n'.join((
         headers_line,
@@ -421,7 +424,6 @@ def test_aggregate_series() -> None:
     # TODO test with a series with early end
     # TODO test with a series with a hole
     # TODO test with series with a misalignment
-    # TODO try stricter assert checking
     # TODO consider writing helpers to return deepcopies of data structures
 
     named_series_orig = {
@@ -460,168 +462,168 @@ def test_aggregate_series() -> None:
     }
 
     # Ensure that the input data has been prepared correctly
-    assert named_series_orig == {
+    assert pfmt(named_series_orig) == pfmt({
         'AAA': [
             {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
              'diff_days': 0, 'tot_days': 0,
-             'diff_src': 500, 'diff_dst': 5, 'latest_rate': 100,
-             'tot_src': 500, 'tot_dst': 5, 'avg_rate': 100,
-             'tot_dst_as_src': 500,
+             'diff_src': 500, 'diff_dst': 5.0, 'latest_rate': 100,
+             'tot_src': 500, 'tot_dst': 5.0, 'avg_rate': 100.0,
+             'tot_dst_as_src': 500.0,
              'chkpt_yield': 0, 'chkpt_apy': 0,
-             'global_yield': 0, 'global_apy': 0,
+             'global_yield': 0.0, 'global_apy': 0,
              'latest_cgt': 0,
              'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
-             'tot_gain_src': 0, 'tot_gain_net_src': 0},
+             'tot_gain_src': 0.0, 'tot_gain_net_src': 0.0},
             {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
-             'diff_days': 31, 'tot_days': 31,
-             'diff_src': 700, 'diff_dst': 10, 'latest_rate': 70,
-             'tot_src': 1200, 'tot_dst': 15, 'avg_rate': 80,
-             'tot_dst_as_src': 1050,
+             'diff_days': 31.0, 'tot_days': 31.0,
+             'diff_src': 700, 'diff_dst': 10.0, 'latest_rate': 70,
+             'tot_src': 1200, 'tot_dst': 15.0, 'avg_rate': 80.0,
+             'tot_dst_as_src': 1050.0,
              'chkpt_yield': -0.30000000000000004, 'chkpt_apy': -0.9849978210304741,
              'global_yield': -0.125, 'global_apy': -0.7924170918049609,
              'latest_cgt': 0.15,
-             'chkpt_gain_src': -150, 'chkpt_gain_net_src': -127.5,
-             'tot_gain_src': -150, 'tot_gain_net_src': -127.5},
+             'chkpt_gain_src': -150.0, 'chkpt_gain_net_src': -127.5,
+             'tot_gain_src': -150.0, 'tot_gain_net_src': -127.5},
             {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
-             'diff_days': 29, 'tot_days': 60,
+             'diff_days': 29.0, 'tot_days': 60.0,
              'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
              'tot_src': 1450, 'tot_dst': 19.25, 'avg_rate': 75.32467532467533,
-             'tot_dst_as_src': 3850,
+             'tot_dst_as_src': 3850.0,
              'chkpt_yield': 1.8571428571428572, 'chkpt_apy': 547587.0028295065,
              'global_yield': 1.6551724137931032, 'global_apy': 379.0996102191754,
              'latest_cgt': 0.15,
-             'chkpt_gain_src': 2550, 'chkpt_gain_net_src': 2167.5,
-             'tot_gain_src': 2400, 'tot_gain_net_src': 2040},
+             'chkpt_gain_src': 2550.0, 'chkpt_gain_net_src': 2167.5,
+             'tot_gain_src': 2400.0, 'tot_gain_net_src': 2040.0},
         ],
         'BBB': [
             {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
              'diff_days': 0, 'tot_days': 0,
-             'diff_src': 500, 'diff_dst': 10, 'latest_rate': 50,
-             'tot_src': 500, 'tot_dst': 10, 'avg_rate': 50,
-             'tot_dst_as_src': 500,
+             'diff_src': 500, 'diff_dst': 10.0, 'latest_rate': 50,
+             'tot_src': 500, 'tot_dst': 10.0, 'avg_rate': 50.0,
+             'tot_dst_as_src': 500.0,
              'chkpt_yield': 0, 'chkpt_apy': 0,
-             'global_yield': 0, 'global_apy': 0,
+             'global_yield': 0.0, 'global_apy': 0,
              'latest_cgt': 0,
              'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
-             'tot_gain_src': 0, 'tot_gain_net_src': 0},
+             'tot_gain_src': 0.0, 'tot_gain_net_src': 0.0},
             {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
-             'diff_days': 31, 'tot_days': 31,
-             'diff_src': 1400, 'diff_dst': 20, 'latest_rate': 70,
-             'tot_src': 1900, 'tot_dst': 30, 'avg_rate': 63.333333333333336,
-             'tot_dst_as_src': 2100,
+             'diff_days': 31.0, 'tot_days': 31.0,
+             'diff_src': 1400, 'diff_dst': 20.0, 'latest_rate': 70,
+             'tot_src': 1900, 'tot_dst': 30.0, 'avg_rate': 63.333333333333336,
+             'tot_dst_as_src': 2100.0,
              'chkpt_yield': 0.3999999999999999, 'chkpt_apy': 51.546013724696195,
              'global_yield': 0.10526315789473673, 'global_apy': 2.249177905018738,
              'latest_cgt': 0.20,
-             'chkpt_gain_src': 200, 'chkpt_gain_net_src': 160,
-             'tot_gain_src': 200, 'tot_gain_net_src': 160},
+             'chkpt_gain_src': 200.0, 'chkpt_gain_net_src': 160.0,
+             'tot_gain_src': 200.0, 'tot_gain_net_src': 160.0},
             {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
-             'diff_days': 29, 'tot_days': 60,
+             'diff_days': 29.0, 'tot_days': 60.0,
              'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
              'tot_src': 2150, 'tot_dst': 34.25, 'avg_rate': 62.77372262773723,
-             'tot_dst_as_src': 6850,
+             'tot_dst_as_src': 6850.0,
              'chkpt_yield': 1.8571428571428572, 'chkpt_apy': 547587.0028295065,
              'global_yield': 2.186046511627907, 'global_apy': 1150.9943403101925,
              'latest_cgt': 0.20,
-             'chkpt_gain_src': 4500, 'chkpt_gain_net_src': 3600,
-             'tot_gain_src': 4700, 'tot_gain_net_src': 3760},
+             'chkpt_gain_src': 4500.0, 'chkpt_gain_net_src': 3600.0,
+             'tot_gain_src': 4700.0, 'tot_gain_net_src': 3760.0},
         ],
-    }
+    })
 
     named_series = deepcopy(named_series_orig)
     named_series_copy = deepcopy(named_series)
     data_out = list(aggregate_series(named_series))
-    assert named_series == named_series_copy
-    assert data_out == [
+    assert pfmt(named_series) == pfmt(named_series_copy)
+    assert pfmt(data_out) == pfmt([
         {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
 
-         'diff_src': 1000, 'tot_src': 1000, 'tot_dst_as_src': 1000,
+         'diff_src': 1000, 'tot_src': 1000, 'tot_dst_as_src': 1000.0,
          'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
-         'tot_gain_src': 0, 'tot_gain_net_src': 0,
+         'tot_gain_src': 0.0, 'tot_gain_net_src': 0.0,
 
          'AAA:diff_days': 0, 'AAA:tot_days': 0,
-         'AAA:diff_src': 500, 'AAA:diff_dst': 5, 'AAA:latest_rate': 100,
-         'AAA:tot_src': 500, 'AAA:tot_dst': 5, 'AAA:avg_rate': 100,
-         'AAA:tot_dst_as_src': 500,
+         'AAA:diff_src': 500, 'AAA:diff_dst': 5.0, 'AAA:latest_rate': 100,
+         'AAA:tot_src': 500, 'AAA:tot_dst': 5.0, 'AAA:avg_rate': 100.0,
+         'AAA:tot_dst_as_src': 500.0,
          'AAA:chkpt_yield': 0, 'AAA:chkpt_apy': 0,
-         'AAA:global_yield': 0, 'AAA:global_apy': 0,
+         'AAA:global_yield': 0.0, 'AAA:global_apy': 0,
          'AAA:latest_cgt': 0,
          'AAA:chkpt_gain_src': 0, 'AAA:chkpt_gain_net_src': 0,
-         'AAA:tot_gain_src': 0, 'AAA:tot_gain_net_src': 0,
+         'AAA:tot_gain_src': 0.0, 'AAA:tot_gain_net_src': 0.0,
 
          'BBB:diff_days': 0, 'BBB:tot_days': 0,
-         'BBB:diff_src': 500, 'BBB:diff_dst': 10, 'BBB:latest_rate': 50,
-         'BBB:tot_src': 500, 'BBB:tot_dst': 10, 'BBB:avg_rate': 50,
-         'BBB:tot_dst_as_src': 500,
+         'BBB:diff_src': 500, 'BBB:diff_dst': 10.0, 'BBB:latest_rate': 50,
+         'BBB:tot_src': 500, 'BBB:tot_dst': 10.0, 'BBB:avg_rate': 50.0,
+         'BBB:tot_dst_as_src': 500.0,
          'BBB:chkpt_yield': 0, 'BBB:chkpt_apy': 0,
-         'BBB:global_yield': 0, 'BBB:global_apy': 0,
+         'BBB:global_yield': 0.0, 'BBB:global_apy': 0,
          'BBB:latest_cgt': 0,
          'BBB:chkpt_gain_src': 0, 'BBB:chkpt_gain_net_src': 0,
-         'BBB:tot_gain_src': 0, 'BBB:tot_gain_net_src': 0,
+         'BBB:tot_gain_src': 0.0, 'BBB:tot_gain_net_src': 0.0,
 
          'chkpt_yield': 0, 'chkpt_apy': 0,
-         'global_yield': 0, 'global_apy': 0},
+         'global_yield': 0.0, 'global_apy': 0},
 
         {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
-         'diff_days': 31, 'tot_days': 31,
+         'diff_days': 31.0, 'tot_days': 31.0,
 
-         'diff_src': 2100, 'tot_src': 3100, 'tot_dst_as_src': 3150,
-         'chkpt_gain_src': 50, 'chkpt_gain_net_src': 32.5,
-         'tot_gain_src': 50, 'tot_gain_net_src': 32.5,
+         'diff_src': 2100, 'tot_src': 3100, 'tot_dst_as_src': 3150.0,
+         'chkpt_gain_src': 50.0, 'chkpt_gain_net_src': 32.5,
+         'tot_gain_src': 50.0, 'tot_gain_net_src': 32.5,
 
-         'AAA:diff_days': 31, 'AAA:tot_days': 31,
-         'AAA:diff_src': 700, 'AAA:diff_dst': 10, 'AAA:latest_rate': 70,
-         'AAA:tot_src': 1200, 'AAA:tot_dst': 15, 'AAA:avg_rate': 80,
-         'AAA:tot_dst_as_src': 1050,
+         'AAA:diff_days': 31.0, 'AAA:tot_days': 31.0,
+         'AAA:diff_src': 700, 'AAA:diff_dst': 10.0, 'AAA:latest_rate': 70,
+         'AAA:tot_src': 1200, 'AAA:tot_dst': 15.0, 'AAA:avg_rate': 80.0,
+         'AAA:tot_dst_as_src': 1050.0,
          'AAA:chkpt_yield': -0.30000000000000004, 'AAA:chkpt_apy': -0.9849978210304741,
          'AAA:global_yield': -0.125, 'AAA:global_apy': -0.7924170918049609,
          'AAA:latest_cgt': 0.15,
-         'AAA:chkpt_gain_src': -150, 'AAA:chkpt_gain_net_src': -127.5,
-         'AAA:tot_gain_src': -150, 'AAA:tot_gain_net_src': -127.5,
+         'AAA:chkpt_gain_src': -150.0, 'AAA:chkpt_gain_net_src': -127.5,
+         'AAA:tot_gain_src': -150.0, 'AAA:tot_gain_net_src': -127.5,
 
-         'BBB:diff_days': 31, 'BBB:tot_days': 31,
-         'BBB:diff_src': 1400, 'BBB:diff_dst': 20, 'BBB:latest_rate': 70,
-         'BBB:tot_src': 1900, 'BBB:tot_dst': 30, 'BBB:avg_rate': 63.333333333333336,
-         'BBB:tot_dst_as_src': 2100,
+         'BBB:diff_days': 31.0, 'BBB:tot_days': 31.0,
+         'BBB:diff_src': 1400, 'BBB:diff_dst': 20.0, 'BBB:latest_rate': 70,
+         'BBB:tot_src': 1900, 'BBB:tot_dst': 30.0, 'BBB:avg_rate': 63.333333333333336,
+         'BBB:tot_dst_as_src': 2100.0,
          'BBB:chkpt_yield': 0.3999999999999999, 'BBB:chkpt_apy': 51.546013724696195,
          'BBB:global_yield': 0.10526315789473673, 'BBB:global_apy': 2.249177905018738,
-         'BBB:latest_cgt': 0.20,
-         'BBB:chkpt_gain_src': 200, 'BBB:chkpt_gain_net_src': 160,
-         'BBB:tot_gain_src': 200, 'BBB:tot_gain_net_src': 160,
+         'BBB:latest_cgt': 0.2,
+         'BBB:chkpt_gain_src': 200.0, 'BBB:chkpt_gain_net_src': 160.0,
+         'BBB:tot_gain_src': 200.0, 'BBB:tot_gain_net_src': 160.0,
 
          'chkpt_yield': 0.05, 'chkpt_apy': 0.7761797254076475,
          'global_yield': 0.016129032258064516, 'global_apy': 0.20730561938737058},
 
         {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
-         'diff_days': 29, 'tot_days': 60,
+         'diff_days': 29.0, 'tot_days': 60.0,
 
-         'diff_src': 500, 'tot_src': 3600, 'tot_dst_as_src': 10_700,
-         'chkpt_gain_src': 7050, 'chkpt_gain_net_src': 5767.5,
-         'tot_gain_src': 7100, 'tot_gain_net_src': 5800,
+         'diff_src': 500, 'tot_src': 3600, 'tot_dst_as_src': 10_700.0,
+         'chkpt_gain_src': 7050.0, 'chkpt_gain_net_src': 5767.5,
+         'tot_gain_src': 7100.0, 'tot_gain_net_src': 5800.0,
 
-         'AAA:diff_days': 29, 'AAA:tot_days': 60,
+         'AAA:diff_days': 29.0, 'AAA:tot_days': 60.0,
          'AAA:diff_src': 250, 'AAA:diff_dst': 4.25, 'AAA:latest_rate': 200,
          'AAA:tot_src': 1450, 'AAA:tot_dst': 19.25, 'AAA:avg_rate': 75.32467532467533,
-         'AAA:tot_dst_as_src': 3850,
+         'AAA:tot_dst_as_src': 3850.0,
          'AAA:chkpt_yield': 1.8571428571428572, 'AAA:chkpt_apy': 547587.0028295065,
          'AAA:global_yield': 1.6551724137931032, 'AAA:global_apy': 379.0996102191754,
          'AAA:latest_cgt': 0.15,
-         'AAA:chkpt_gain_src': 2550, 'AAA:chkpt_gain_net_src': 2167.5,
-         'AAA:tot_gain_src': 2400, 'AAA:tot_gain_net_src': 2040,
+         'AAA:chkpt_gain_src': 2550.0, 'AAA:chkpt_gain_net_src': 2167.5,
+         'AAA:tot_gain_src': 2400.0, 'AAA:tot_gain_net_src': 2040.0,
 
-         'BBB:diff_days': 29, 'BBB:tot_days': 60,
+         'BBB:diff_days': 29.0, 'BBB:tot_days': 60.0,
          'BBB:diff_src': 250, 'BBB:diff_dst': 4.25, 'BBB:latest_rate': 200,
          'BBB:tot_src': 2150, 'BBB:tot_dst': 34.25, 'BBB:avg_rate': 62.77372262773723,
-         'BBB:tot_dst_as_src': 6850,
+         'BBB:tot_dst_as_src': 6850.0,
          'BBB:chkpt_yield': 1.8571428571428572, 'BBB:chkpt_apy': 547587.0028295065,
          'BBB:global_yield': 2.186046511627907, 'BBB:global_apy': 1150.9943403101925,
          'BBB:latest_cgt': 0.20,
-         'BBB:chkpt_gain_src': 4500, 'BBB:chkpt_gain_net_src': 3600,
-         'BBB:tot_gain_src': 4700, 'BBB:tot_gain_net_src': 3760,
+         'BBB:chkpt_gain_src': 4500.0, 'BBB:chkpt_gain_net_src': 3600.0,
+         'BBB:tot_gain_src': 4700.0, 'BBB:tot_gain_net_src': 3760.0,
 
          'chkpt_yield': 2.238095238095238, 'chkpt_apy': 2646126.1510352483,
          'global_yield': 1.9722222222222223, 'global_apy': 753.9376784192543},
-    ]
+    ])
 
     with pytest.raises(ValueError) as exc_info:
         list(aggregate_series({}))
@@ -635,7 +637,7 @@ def test_aggregate_series() -> None:
     assert exc_info.value.args == (
         'Invalid entry order: 2020-01-12 00:00:00+00:00 >= '
         '2020-01-11 00:00:00+00:00',)
-    assert named_series == named_series_copy
+    assert pfmt(named_series) == pfmt(named_series_copy)
 
     named_series = deepcopy(named_series_orig)
     named_series['BBB'][1]['datetime'] = dt(2020, 1, 12, tzinfo=tz.utc)
@@ -645,4 +647,4 @@ def test_aggregate_series() -> None:
     assert exc_info.value.args == (
         'Invalid entry order: 2020-01-12 00:00:00+00:00 >= '
         '2020-01-12 00:00:00+00:00',)
-    assert named_series == named_series_copy
+    assert pfmt(named_series) == pfmt(named_series_copy)

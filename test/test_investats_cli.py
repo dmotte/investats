@@ -10,6 +10,8 @@ from datetime import timezone as tz
 
 from investats import load_data, save_data, complete_invest_entry, compute_stats
 
+from util import pfmt
+
 
 def test_load_data() -> None:
     yml = textwrap.dedent('''\
@@ -22,15 +24,15 @@ def test_load_data() -> None:
 
     data = load_data(io.StringIO(yml))
 
-    assert data == [
+    assert pfmt(data) == pfmt([
         {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'invest',
-         'inv_src': 500, 'rate': 100},
+         'inv_src': 500, 'rate': 100.0},
         {'datetime': dt(2020, 1, 12).astimezone(), 'type': 'chkpt',
          'cgt': 0.15},
         {'datetime': dt(2020, 2, 12).astimezone(), 'type': 'invest',
          'inv_src': 500, 'rate': 100.6558},
         {'datetime': dt(2020, 2, 12, 1, 23, 45).astimezone(), 'type': 'chkpt'},
-    ]
+    ])
 
     yml = textwrap.dedent('''\
         ---
@@ -272,45 +274,45 @@ def test_compute_stats() -> None:
     data_out_expected = [
         {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
          'diff_days': 0, 'tot_days': 0,
-         'diff_src': 500, 'diff_dst': 5, 'latest_rate': 100,
-         'tot_src': 500, 'tot_dst': 5, 'avg_rate': 100,
-         'tot_dst_as_src': 500,
+         'diff_src': 500, 'diff_dst': 5.0, 'latest_rate': 100,
+         'tot_src': 500, 'tot_dst': 5.0, 'avg_rate': 100.0,
+         'tot_dst_as_src': 500.0,
          'chkpt_yield': 0, 'chkpt_apy': 0,
-         'global_yield': 0, 'global_apy': 0,
+         'global_yield': 0.0, 'global_apy': 0,
          'latest_cgt': 0,
          'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
-         'tot_gain_src': 0, 'tot_gain_net_src': 0},
+         'tot_gain_src': 0.0, 'tot_gain_net_src': 0.0},
         {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
-         'diff_days': 31, 'tot_days': 31,
-         'diff_src': 700, 'diff_dst': 10, 'latest_rate': 70,
-         'tot_src': 1200, 'tot_dst': 15, 'avg_rate': 80,
-         'tot_dst_as_src': 1050,
+         'diff_days': 31.0, 'tot_days': 31.0,
+         'diff_src': 700, 'diff_dst': 10.0, 'latest_rate': 70,
+         'tot_src': 1200, 'tot_dst': 15.0, 'avg_rate': 80.0,
+         'tot_dst_as_src': 1050.0,
          'chkpt_yield': -0.30000000000000004, 'chkpt_apy': -0.9849978210304741,
          'global_yield': -0.125, 'global_apy': -0.7924170918049609,
          'latest_cgt': 0.15,
-         'chkpt_gain_src': -150, 'chkpt_gain_net_src': -127.5,
-         'tot_gain_src': -150, 'tot_gain_net_src': -127.5},
+         'chkpt_gain_src': -150.0, 'chkpt_gain_net_src': -127.5,
+         'tot_gain_src': -150.0, 'tot_gain_net_src': -127.5},
         {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
-         'diff_days': 29, 'tot_days': 60,
+         'diff_days': 29.0, 'tot_days': 60.0,
          'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
          'tot_src': 1450, 'tot_dst': 19.25, 'avg_rate': 75.32467532467533,
-         'tot_dst_as_src': 3850,
+         'tot_dst_as_src': 3850.0,
          'chkpt_yield': 1.8571428571428572, 'chkpt_apy': 547587.0028295065,
          'global_yield': 1.6551724137931032, 'global_apy': 379.0996102191754,
          'latest_cgt': 0.15,
-         'chkpt_gain_src': 2550, 'chkpt_gain_net_src': 2167.5,
-         'tot_gain_src': 2400, 'tot_gain_net_src': 2040},
+         'chkpt_gain_src': 2550.0, 'chkpt_gain_net_src': 2167.5,
+         'tot_gain_src': 2400.0, 'tot_gain_net_src': 2040.0},
     ]
 
     data_in = [x.copy() for x in data_in_orig]
     data_in_copy = [x.copy() for x in data_in]
     data_out = list(compute_stats(data_in))
-    assert data_in == data_in_copy
-    assert data_out == data_out_expected
+    assert pfmt(data_in) == pfmt(data_in_copy)
+    assert pfmt(data_out) == pfmt(data_out_expected)
 
     data_in = [x.copy() for x in data_in_orig]
     data_in[0]['datetime'] = dt(2020, 1, 1, tzinfo=tz.utc)
     data_in_copy = [x.copy() for x in data_in]
     data_out = list(compute_stats(data_in))
-    assert data_in == data_in_copy
-    assert data_out == data_out_expected
+    assert pfmt(data_in) == pfmt(data_in_copy)
+    assert pfmt(data_out) == pfmt(data_out_expected)
