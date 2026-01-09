@@ -422,6 +422,7 @@ def test_aggregate_series() -> None:
     # TODO test with a series with a hole
     # TODO test with series with a misalignment
     # TODO try stricter assert checking
+    # TODO consider writing helpers to return deepcopies of data structures
 
     named_series_orig = {
         'AAA': list(compute_stats([
