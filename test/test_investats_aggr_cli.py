@@ -421,6 +421,7 @@ def test_aggregate_series() -> None:
     # TODO test with a series with early end
     # TODO test with a series with a hole
     # TODO test with series with a misalignment
+    # TODO try stricter assert checking
 
     named_series_orig = {
         'AAA': list(compute_stats([
