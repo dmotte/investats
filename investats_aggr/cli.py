@@ -84,6 +84,10 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
 
     fields = {k: get_fmt(k) for k in data[0].keys()}
 
+    # TODO consider the following way of printing floats:
+    #   int(x) if isinstance(x, float) and x.is_integer() else x
+    # And add to snippets. And extend to other projects as well
+
     print(','.join(fields.keys()), file=file)
     for x in data:
         print(','.join('' if x[k] is None else f(x[k])
