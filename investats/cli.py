@@ -21,6 +21,14 @@ def is_aware(d: dt) -> bool:
     return d.tzinfo is not None and d.tzinfo.utcoffset(d) is not None
 
 
+# Src: https://github.com/dmotte/misc/tree/main/snippets
+def normlz_num(x: int | float) -> int | float:
+    '''
+    Normalize number type by converting whole-number floats to int
+    '''
+    return int(x) if isinstance(x, float) and x.is_integer() else x
+
+
 def load_data(file: TextIO) -> list[dict]:
     '''
     Loads data from a YAML file
@@ -118,7 +126,8 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
 
     print(','.join(fields.keys()), file=file)
     for x in data:
-        print(','.join(f(x[k]) for k, f in fields.items()), file=file)
+        print(','.join(f(normlz_num(x[k])) for k, f in fields.items()),
+              file=file)
 
 
 def complete_invest_entry(entry_in: dict) -> dict:
