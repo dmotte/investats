@@ -124,39 +124,8 @@ def test_load_data() -> None:
         '2020-01-12 00:00:00+00:00',)
 
 
-def test_save_data() -> None:
-    data = [
-        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
-         'diff_days': 0, 'tot_days': 0,
-         'diff_src': 500, 'diff_dst': 5.0, 'latest_rate': 100,
-         'tot_src': 500, 'tot_dst': 5.0, 'avg_rate': 100.0,
-         'tot_dst_as_src': 500.0,
-         'chkpt_yield': 0, 'chkpt_apy': 0,
-         'global_yield': 0.0, 'global_apy': 0,
-         'latest_cgt': 0,
-         'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
-         'tot_gain_src': 0.0, 'tot_gain_net_src': 0.0},
-        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
-         'diff_days': 31.0, 'tot_days': 31.0,
-         'diff_src': 700, 'diff_dst': 10.0, 'latest_rate': 70,
-         'tot_src': 1200, 'tot_dst': 15.0, 'avg_rate': 80.0,
-         'tot_dst_as_src': 1050.0,
-         'chkpt_yield': -0.30000000000000004, 'chkpt_apy': -0.9849978210304741,
-         'global_yield': -0.125, 'global_apy': -0.7924170918049609,
-         'latest_cgt': 0.15,
-         'chkpt_gain_src': -150.0, 'chkpt_gain_net_src': -127.5,
-         'tot_gain_src': -150.0, 'tot_gain_net_src': -127.5},
-        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
-         'diff_days': 29.0, 'tot_days': 60.0,
-         'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
-         'tot_src': 1450, 'tot_dst': 19.25, 'avg_rate': 75.32467532467533,
-         'tot_dst_as_src': 3850.0,
-         'chkpt_yield': 1.8571428571428572, 'chkpt_apy': 547587.0028295065,
-         'global_yield': 1.6551724137931032, 'global_apy': 379.0996102191754,
-         'latest_cgt': 0.15,
-         'chkpt_gain_src': 2550.0, 'chkpt_gain_net_src': 2167.5,
-         'tot_gain_src': 2400.0, 'tot_gain_net_src': 2040.0},
-    ]
+def test_save_data(get_data_invstts) -> None:
+    data = get_data_invstts(0, 'out')
 
     headers_line = (
         'datetime,diff_days,tot_days,diff_src,diff_dst,latest_rate,tot_src,'
@@ -238,67 +207,19 @@ def test_complete_invest_entry() -> None:
     assert exc_info.value.args == ('inv_dst',)
 
 
-def test_compute_stats() -> None:
-    data_in_orig = [
-        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'invest',
-         'inv_src': 500, 'rate': 100},
-        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc), 'type': 'chkpt',
-         'notes': 'First checkpoint'},
+def test_compute_stats(get_data_invstts) -> None:
+    for pair in get_data_invstts():
+        data_in = pair['in']
+        data_in_copy = [x.copy() for x in data_in]
+        data_out_expected = pair['out']
+        data_out_actual = list(compute_stats(data_in))
+        assert pfmt(data_in) == pfmt(data_in_copy)
+        assert pfmt(data_out_actual) == pfmt(data_out_expected)
 
-        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'invest',
-         'inv_src': 700, 'rate': 70},
-        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'chkpt',
-         'cgt': 0.15},
-
-        {'datetime': dt(2020, 3, 10, tzinfo=tz.utc), 'type': 'invest',
-         'inv_src': 200, 'rate': 50, 'notes': 'Some notes here'},
-        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'invest',
-         'inv_src': 50, 'rate': 200},
-        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'chkpt'},
-    ]
-
-    data_out_expected = [
-        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
-         'diff_days': 0, 'tot_days': 0,
-         'diff_src': 500, 'diff_dst': 5.0, 'latest_rate': 100,
-         'tot_src': 500, 'tot_dst': 5.0, 'avg_rate': 100.0,
-         'tot_dst_as_src': 500.0,
-         'chkpt_yield': 0, 'chkpt_apy': 0,
-         'global_yield': 0.0, 'global_apy': 0,
-         'latest_cgt': 0,
-         'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
-         'tot_gain_src': 0.0, 'tot_gain_net_src': 0.0},
-        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
-         'diff_days': 31.0, 'tot_days': 31.0,
-         'diff_src': 700, 'diff_dst': 10.0, 'latest_rate': 70,
-         'tot_src': 1200, 'tot_dst': 15.0, 'avg_rate': 80.0,
-         'tot_dst_as_src': 1050.0,
-         'chkpt_yield': -0.30000000000000004, 'chkpt_apy': -0.9849978210304741,
-         'global_yield': -0.125, 'global_apy': -0.7924170918049609,
-         'latest_cgt': 0.15,
-         'chkpt_gain_src': -150.0, 'chkpt_gain_net_src': -127.5,
-         'tot_gain_src': -150.0, 'tot_gain_net_src': -127.5},
-        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
-         'diff_days': 29.0, 'tot_days': 60.0,
-         'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
-         'tot_src': 1450, 'tot_dst': 19.25, 'avg_rate': 75.32467532467533,
-         'tot_dst_as_src': 3850.0,
-         'chkpt_yield': 1.8571428571428572, 'chkpt_apy': 547587.0028295065,
-         'global_yield': 1.6551724137931032, 'global_apy': 379.0996102191754,
-         'latest_cgt': 0.15,
-         'chkpt_gain_src': 2550.0, 'chkpt_gain_net_src': 2167.5,
-         'tot_gain_src': 2400.0, 'tot_gain_net_src': 2040.0},
-    ]
-
-    data_in = [x.copy() for x in data_in_orig]
-    data_in_copy = [x.copy() for x in data_in]
-    data_out = list(compute_stats(data_in))
-    assert pfmt(data_in) == pfmt(data_in_copy)
-    assert pfmt(data_out) == pfmt(data_out_expected)
-
-    data_in = [x.copy() for x in data_in_orig]
+    data_in = get_data_invstts(0, 'in')
     data_in[0]['datetime'] = dt(2020, 1, 1, tzinfo=tz.utc)
     data_in_copy = [x.copy() for x in data_in]
-    data_out = list(compute_stats(data_in))
+    data_out_expected = get_data_invstts(0, 'out')
+    data_out_actual = list(compute_stats(data_in))
     assert pfmt(data_in) == pfmt(data_in_copy)
-    assert pfmt(data_out) == pfmt(data_out_expected)
+    assert pfmt(data_out_actual) == pfmt(data_out_expected)
