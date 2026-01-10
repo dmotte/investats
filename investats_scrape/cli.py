@@ -63,7 +63,7 @@ def save_data(data: list[dict], file: TextIO) -> None:
 
     for entry in data:
         print('- { ' + ', '.join(
-            f'{k}: {str(v)}' for k, v in entry.items()
+            f'{k}: {v}' for k, v in entry.items()
         ) + ' }', file=file)
 
 
