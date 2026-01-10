@@ -9,6 +9,14 @@ from dateutil import parser as dup
 from typing import Any, TextIO
 
 
+# Src: https://github.com/dmotte/misc/tree/main/snippets
+def normlz_num(x: int | float) -> int | float:
+    '''
+    Normalize number type by converting whole-number floats to int
+    '''
+    return int(x) if isinstance(x, float) and x.is_integer() else x
+
+
 def pair_items_to_dict(items: list[str]) -> dict[str, str]:
     '''
     Converts a list of (asset name, input file) pairs, specified as a simple
@@ -84,13 +92,9 @@ def save_data(data: list[dict], file: TextIO, fmt_days: str = '',
 
     fields = {k: get_fmt(k) for k in data[0].keys()}
 
-    # TODO consider the following way of printing floats:
-    #   int(x) if isinstance(x, float) and x.is_integer() else x
-    # And add to snippets. And extend to other projects as well
-
     print(','.join(fields.keys()), file=file)
     for x in data:
-        print(','.join('' if x[k] is None else f(x[k])
+        print(','.join('' if x[k] is None else f(normlz_num(x[k]))
                        for k, f in fields.items()), file=file)
 
 
