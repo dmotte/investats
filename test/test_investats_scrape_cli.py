@@ -7,7 +7,6 @@ import pytest
 
 from datetime import datetime as dt
 from datetime import timezone as tz
-from dateutil.tz import UTC
 
 from investats_scrape import is_txn_valid, load_data, save_data, txns_to_entries
 
@@ -40,50 +39,50 @@ def test_load_data() -> None:
 
         ########## TRANSACTION ##########
 
-        Datetime:  2020-09-12T11:30:00Z
+        Datetime:  2020-09-12T11:30:00
         Asset:     BBB
         Price:     25.0000
         Shares:    25
 
         ########## TRANSACTION ##########
 
-        Datetime:  2020-10-12T12:00:00Z
+        Datetime:  2020-10-12T12:00:00
         Asset:     AAA
         Price:     125.0000
         Shares:    22
 
         ########## TRANSACTION ##########
 
-        Datetime:  2020-10-12T12:30:00Z
+        Datetime:  2020-10-12T12:30:00
         Asset:     BBB
         Price:     20.0000
         Amount:    400.00
 
         ########## TRANSACTION ##########
 
-        Datetime:  2020-11-12T14:00:00Z
+        Datetime:  2020-11-12T14:00:00
         Asset:     AAA
         Price:     130.0000
         Amount:    2080.00
 
         ########## TRANSACTION ##########
 
-        Datetime:  2020-11-12T14:30:00Z
+        Datetime:  2020-11-12T14:30:00
         Asset:     BBB
         Price:     25.0000
         Shares:    15
     ''')
 
     data_out_expected = [
-        {'datetime': dt(2020, 9, 12, 11, 30, tzinfo=UTC), 'asset': 'BBB',
+        {'datetime': dt(2020, 9, 12, 11, 30), 'asset': 'BBB',
          'rate': '25.0000', 'inv_dst': '25'},
-        {'datetime': dt(2020, 10, 12, 12, tzinfo=UTC), 'asset': 'AAA',
+        {'datetime': dt(2020, 10, 12, 12), 'asset': 'AAA',
          'rate': '125.0000', 'inv_dst': '22'},
-        {'datetime': dt(2020, 10, 12, 12, 30, tzinfo=UTC), 'asset': 'BBB',
+        {'datetime': dt(2020, 10, 12, 12, 30), 'asset': 'BBB',
          'rate': '20.0000', 'inv_src': '400.00'},
-        {'datetime': dt(2020, 11, 12, 14, tzinfo=UTC), 'asset': 'AAA',
+        {'datetime': dt(2020, 11, 12, 14), 'asset': 'AAA',
          'rate': '130.0000', 'inv_src': '2080.00'},
-        {'datetime': dt(2020, 11, 12, 14, 30, tzinfo=UTC), 'asset': 'BBB',
+        {'datetime': dt(2020, 11, 12, 14, 30), 'asset': 'BBB',
          'rate': '25.0000', 'inv_dst': '15'},
     ]
 

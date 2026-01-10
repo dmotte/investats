@@ -8,7 +8,6 @@ import pytest
 from copy import deepcopy
 from datetime import datetime as dt
 from datetime import timezone as tz
-from dateutil.tz import UTC
 
 from investats import compute_stats
 from investats_aggr import pair_items_to_dict, load_data, save_data, \
@@ -36,22 +35,22 @@ def test_pair_items_to_dict() -> None:
 def test_load_data() -> None:
     csv = textwrap.dedent('''\
         datetime,field01,field02,field03
-        2020-01-01 00:00:00+00:00,0,0,0
-        2020-01-12 00:00:00+00:00,11,11,500
-        2020-02-12 00:00:00+00:00,31,42,700.123
-        2020-03-12 00:00:00+00:00,29,71,250.001
+        2020-01-01 00:00:00,0,0,0
+        2020-01-12 00:00:00,11,11,500
+        2020-02-12 00:00:00,31,42,700.123
+        2020-03-12 00:00:00,29,71,250.001
     ''')
 
     data = list(load_data(io.StringIO(csv)))
 
     assert pfmt(data) == pfmt([
-        {'datetime': dt(2020, 1, 1, tzinfo=UTC),
+        {'datetime': dt(2020, 1, 1),
          'field01': 0.0, 'field02': 0.0, 'field03': 0.0},
-        {'datetime': dt(2020, 1, 12, tzinfo=UTC),
+        {'datetime': dt(2020, 1, 12),
          'field01': 11.0, 'field02': 11.0, 'field03': 500.0},
-        {'datetime': dt(2020, 2, 12, tzinfo=UTC),
+        {'datetime': dt(2020, 2, 12),
          'field01': 31.0, 'field02': 42.0, 'field03': 700.123},
-        {'datetime': dt(2020, 3, 12, tzinfo=UTC),
+        {'datetime': dt(2020, 3, 12),
          'field01': 29.0, 'field02': 71.0, 'field03': 250.001},
     ])
 
