@@ -156,9 +156,9 @@ def test_txns_to_entries() -> None:
 
     data_in = [x.copy() for x in data_in_orig]
     data_in_copy = [x.copy() for x in data_in]
-    data_out = list(txns_to_entries(data_in, 'AAA'))
+    data_out_actual = list(txns_to_entries(data_in, 'AAA'))
     assert pfmt(data_in) == pfmt(data_in_copy)
-    assert pfmt(data_out) == pfmt(data_out_expected)
+    assert pfmt(data_out_actual) == pfmt(data_out_expected)
 
     data_out_expected = [
         {'datetime': dt(2020, 10, 12, 12, tzinfo=tz.utc), 'type': 'invest',
@@ -174,9 +174,9 @@ def test_txns_to_entries() -> None:
 
     data_in = [x.copy() for x in data_in_orig]
     data_in_copy = [x.copy() for x in data_in]
-    data_out = list(txns_to_entries(data_in, 'AAA', '0.15'))
+    data_out_actual = list(txns_to_entries(data_in, 'AAA', '0.15'))
     assert pfmt(data_in) == pfmt(data_in_copy)
-    assert pfmt(data_out) == pfmt(data_out_expected)
+    assert pfmt(data_out_actual) == pfmt(data_out_expected)
 
     data_out_expected = [
         {'datetime': dt(2020, 9, 12, 11, 30, tzinfo=tz.utc), 'type': 'invest',
@@ -192,6 +192,6 @@ def test_txns_to_entries() -> None:
 
     data_in = [x.copy() for x in data_in_orig]
     data_in_copy = [x.copy() for x in data_in]
-    data_out = list(txns_to_entries(data_in, 'BBB'))
+    data_out_actual = list(txns_to_entries(data_in, 'BBB'))
     assert pfmt(data_in) == pfmt(data_in_copy)
-    assert pfmt(data_out) == pfmt(data_out_expected)
+    assert pfmt(data_out_actual) == pfmt(data_out_expected)
