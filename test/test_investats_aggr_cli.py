@@ -172,11 +172,6 @@ def test_save_data(get_data_invsttsaggr) -> None:
 
 
 def test_aggregate_series(get_data_invsttsaggr) -> None:
-    # TODO test with a series with late start
-    # TODO test with a series with early end
-    # TODO test with a series with a hole
-    # TODO test with series with a misalignment
-
     for pair in get_data_invsttsaggr():
         data_in = pair['in']
         data_in_copy = deepcopy(data_in)

@@ -103,6 +103,39 @@ _data_invstts = [
          'chkpt_gain_src': 4500.0, 'chkpt_gain_net_src': 3600.0,
          'tot_gain_src': 4700.0, 'tot_gain_net_src': 3760.0},
     ]},
+    {'in': [
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'invest',
+         'inv_src': 1400, 'rate': 70},
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc), 'type': 'chkpt',
+         'cgt': 0.20},
+
+        {'datetime': dt(2020, 3, 10, tzinfo=tz.utc), 'type': 'invest',
+         'inv_src': 200, 'rate': 50},
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'invest',
+         'inv_src': 50, 'rate': 200},
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc), 'type': 'chkpt'},
+    ], 'out': [
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
+         'diff_days': 0, 'tot_days': 0,
+         'diff_src': 1400, 'diff_dst': 20.0, 'latest_rate': 70,
+         'tot_src': 1400, 'tot_dst': 20.0, 'avg_rate': 70.0,
+         'tot_dst_as_src': 1400.0,
+         'chkpt_yield': 0, 'chkpt_apy': 0,
+         'global_yield': 0.0, 'global_apy': 0,
+         'latest_cgt': 0.20,
+         'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
+         'tot_gain_src': 0.0, 'tot_gain_net_src': 0.0},
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
+         'diff_days': 29.0, 'tot_days': 29.0,
+         'diff_src': 250, 'diff_dst': 4.25, 'latest_rate': 200,
+         'tot_src': 1650, 'tot_dst': 24.25, 'avg_rate': 68.04123711340206,
+         'tot_dst_as_src': 4850.0,
+         'chkpt_yield': 1.8571428571428572, 'chkpt_apy': 547587.0028295065,
+         'global_yield': 1.9393939393939394, 'global_apy': 782688.4520948047,
+         'latest_cgt': 0.20,
+         'chkpt_gain_src': 3200.0, 'chkpt_gain_net_src': 2560.0,
+         'tot_gain_src': 3200.0, 'tot_gain_net_src': 2560.0},
+    ]},
 ]
 
 
@@ -308,6 +341,102 @@ _data_invsttsaggr = [
          'chkpt_yield': 0.8095238095238095, 'chkpt_apy': 1743.8479705869902,
          'global_yield': 0.7761194029850746, 'global_apy': 31.93231787318252},
     ]},
+    {'in': {
+        'AAA': _data_invstts[0]['out'],
+        'BBB': _data_invstts[2]['out'],
+    }, 'out': [
+        {'datetime': dt(2020, 1, 12, tzinfo=tz.utc),
+         'diff_days': 0, 'tot_days': 0,
+
+         'diff_src': 500, 'tot_src': 500, 'tot_dst_as_src': 500.0,
+         'chkpt_gain_src': 0, 'chkpt_gain_net_src': 0,
+         'tot_gain_src': 0.0, 'tot_gain_net_src': 0.0,
+
+         'AAA:diff_days': 0, 'AAA:tot_days': 0,
+         'AAA:diff_src': 500, 'AAA:diff_dst': 5.0, 'AAA:latest_rate': 100,
+         'AAA:tot_src': 500, 'AAA:tot_dst': 5.0, 'AAA:avg_rate': 100.0,
+         'AAA:tot_dst_as_src': 500.0,
+         'AAA:chkpt_yield': 0, 'AAA:chkpt_apy': 0,
+         'AAA:global_yield': 0.0, 'AAA:global_apy': 0,
+         'AAA:latest_cgt': 0,
+         'AAA:chkpt_gain_src': 0, 'AAA:chkpt_gain_net_src': 0,
+         'AAA:tot_gain_src': 0.0, 'AAA:tot_gain_net_src': 0.0,
+
+         'BBB:diff_days': None, 'BBB:tot_days': None,
+         'BBB:diff_src': None, 'BBB:diff_dst': None, 'BBB:latest_rate': None,
+         'BBB:tot_src': None, 'BBB:tot_dst': None, 'BBB:avg_rate': None,
+         'BBB:tot_dst_as_src': None,
+         'BBB:chkpt_yield': None, 'BBB:chkpt_apy': None,
+         'BBB:global_yield': None, 'BBB:global_apy': None,
+         'BBB:latest_cgt': None,
+         'BBB:chkpt_gain_src': None, 'BBB:chkpt_gain_net_src': None,
+         'BBB:tot_gain_src': None, 'BBB:tot_gain_net_src': None,
+
+         'chkpt_yield': 0, 'chkpt_apy': 0,
+         'global_yield': 0.0, 'global_apy': 0},
+
+        {'datetime': dt(2020, 2, 12, tzinfo=tz.utc),
+         'diff_days': 31.0, 'tot_days': 31.0,
+
+         'diff_src': 2100, 'tot_src': 2600, 'tot_dst_as_src': 2450.0,
+         'chkpt_gain_src': -150.0, 'chkpt_gain_net_src': -127.5,
+         'tot_gain_src': -150.0, 'tot_gain_net_src': -127.5,
+
+         'AAA:diff_days': 31.0, 'AAA:tot_days': 31.0,
+         'AAA:diff_src': 700, 'AAA:diff_dst': 10.0, 'AAA:latest_rate': 70,
+         'AAA:tot_src': 1200, 'AAA:tot_dst': 15.0, 'AAA:avg_rate': 80.0,
+         'AAA:tot_dst_as_src': 1050.0,
+         'AAA:chkpt_yield': -0.30000000000000004, 'AAA:chkpt_apy': -0.9849978210304741,
+         'AAA:global_yield': -0.125, 'AAA:global_apy': -0.7924170918049609,
+         'AAA:latest_cgt': 0.15,
+         'AAA:chkpt_gain_src': -150.0, 'AAA:chkpt_gain_net_src': -127.5,
+         'AAA:tot_gain_src': -150.0, 'AAA:tot_gain_net_src': -127.5,
+
+         'BBB:diff_days': 0, 'BBB:tot_days': 0,
+         'BBB:diff_src': 1400, 'BBB:diff_dst': 20.0, 'BBB:latest_rate': 70,
+         'BBB:tot_src': 1400, 'BBB:tot_dst': 20.0, 'BBB:avg_rate': 70.0,
+         'BBB:tot_dst_as_src': 1400.0,
+         'BBB:chkpt_yield': 0, 'BBB:chkpt_apy': 0,
+         'BBB:global_yield': 0.0, 'BBB:global_apy': 0,
+         'BBB:latest_cgt': 0.20,
+         'BBB:chkpt_gain_src': 0, 'BBB:chkpt_gain_net_src': 0,
+         'BBB:tot_gain_src': 0.0, 'BBB:tot_gain_net_src': 0.0,
+
+         'chkpt_yield': -0.3, 'chkpt_apy': -0.9849978210304741,
+         'global_yield': -0.057692307692307696, 'global_apy': -0.503247246199224},
+
+        {'datetime': dt(2020, 3, 12, tzinfo=tz.utc),
+         'diff_days': 29.0, 'tot_days': 60.0,
+
+         'diff_src': 500, 'tot_src': 3100, 'tot_dst_as_src': 8700.0,
+         'chkpt_gain_src': 5750.0, 'chkpt_gain_net_src': 4727.5,
+         'tot_gain_src': 5600.0, 'tot_gain_net_src': 4600.0,
+
+         'AAA:diff_days': 29.0, 'AAA:tot_days': 60.0,
+         'AAA:diff_src': 250, 'AAA:diff_dst': 4.25, 'AAA:latest_rate': 200,
+         'AAA:tot_src': 1450, 'AAA:tot_dst': 19.25, 'AAA:avg_rate': 75.32467532467533,
+         'AAA:tot_dst_as_src': 3850.0,
+         'AAA:chkpt_yield': 1.8571428571428572, 'AAA:chkpt_apy': 547587.0028295065,
+         'AAA:global_yield': 1.6551724137931032, 'AAA:global_apy': 379.0996102191754,
+         'AAA:latest_cgt': 0.15,
+         'AAA:chkpt_gain_src': 2550.0, 'AAA:chkpt_gain_net_src': 2167.5,
+         'AAA:tot_gain_src': 2400.0, 'AAA:tot_gain_net_src': 2040.0,
+
+         'BBB:diff_days': 29.0, 'BBB:tot_days': 29.0,
+         'BBB:diff_src': 250, 'BBB:diff_dst': 4.25, 'BBB:latest_rate': 200,
+         'BBB:tot_src': 1650, 'BBB:tot_dst': 24.25, 'BBB:avg_rate': 68.04123711340206,
+         'BBB:tot_dst_as_src': 4850.0,
+         'BBB:chkpt_yield': 1.8571428571428572, 'BBB:chkpt_apy': 547587.0028295065,
+         'BBB:global_yield': 1.9393939393939394, 'BBB:global_apy': 782688.4520948047,
+         'BBB:latest_cgt': 0.20,
+         'BBB:chkpt_gain_src': 3200.0, 'BBB:chkpt_gain_net_src': 2560.0,
+         'BBB:tot_gain_src': 3200.0, 'BBB:tot_gain_net_src': 2560.0,
+
+         'chkpt_yield': 2.3469387755102042, 'chkpt_apy': 4011670.435026271,
+         'global_yield': 1.8064516129032258, 'global_apy': 531.4659194650059},
+    ]},
+    # TODO test with a series with a hole
+    # TODO test with series with a misalignment
 ]
 
 
