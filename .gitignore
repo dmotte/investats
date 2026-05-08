@@ -1,4 +1,4 @@
-/venv/
+/.venv/
 
 /investats/__pycache__/
 /investats_gen/__pycache__/
